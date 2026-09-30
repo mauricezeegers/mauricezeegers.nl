@@ -97,7 +97,8 @@
   provisional: true shows the "sample figures" notice. Set to false once every block below has a real asOf date.
   asOf: date (YYYY-MM-DD) of the last real refresh of that block, or null while the values are still samples.
 
-  research: paper counts for the last 12 months and the 12 months before, plus papersTotal (all time), all from PubMed (author search Zeegers MP).
+  research: all counts come from the publications sheet (Type Paper, Status Published). year = the current calendar year;
+            papersThisYear = papers with that year, papersLastYear = papers from the year before, papersTotal = all papers.
             latest and publications come from the publications sheet. latest.text is optional (approved announcement);
             when empty the page shows a neutral one-line sentence built from journal and year.
   press:    not shown on the page for now (kept so the weekly refresh does not break). latest.text is shown in the latest-article card.
@@ -117,10 +118,11 @@
   "updated": "2026-09-30",
   "research": {
     "asOf": "2026-09-30",
-    "source": "PubMed",
-    "papers12m": 19,
-    "papersPrev12m": 15,
-    "papersTotal": 362,
+    "source": "the publications register",
+    "year": 2026,
+    "papersThisYear": 13,
+    "papersLastYear": 16,
+    "papersTotal": 393,
     "latest": {
       "title": "Modeling the complex smoking exposure history in assessment of pan-cancer risk",
       "journal": "MedScience (Frontiers of Medicine)",
@@ -795,7 +797,7 @@
       <a class="dash-card" href="#research" data-tab="research">
         <div class="dash-head">
           <span class="icon"><svg><use href="#icon-research"/></svg></span>
-          <span class="titles"><h3>Research</h3><span class="period">Last 12 months</span></span>
+          <span class="titles"><h3>Research</h3><span class="period">This year and last year</span></span>
         </div>
         <div class="metrics" data-render="research-metrics"></div>
         <div data-render="research-latest-mini"></div>
@@ -1074,12 +1076,13 @@
     },
 
     "research-metrics": function(){
-      var r = D.research, lbl = "compared with the previous 12 months";
-      return metric("Publications", fmt(r.papers12m || 0), pctDelta(r.papers12m, r.papersPrev12m, lbl), "vs previous 12 months") +
-             (r.papersTotal ? metric("All time", fmt(r.papersTotal), "", "", "papers indexed in PubMed") : "");
+      var r = D.research, y = r.year;
+      return metric("Publications this year", fmt(r.papersThisYear || 0), "", "", y ? esc(y) : "") +
+             metric("Publications last year", fmt(r.papersLastYear || 0), "", "", y ? esc(y - 1) : "") +
+             (r.papersTotal ? metric("All time", fmt(r.papersTotal), "", "", "published papers") : "");
     },
     "research-source": function(){
-      return "Papers indexed in " + esc(D.research.source || "PubMed") + ", last 12 months compared with the 12 months before. " + asOf(D.research.asOf);
+      return "Published papers from " + esc(D.research.source || "the publications register") + ", counted by publication year. " + asOf(D.research.asOf);
     },
     "research-latest-mini": function(){
       var L = D.research.latest;
