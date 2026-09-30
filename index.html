@@ -106,8 +106,7 @@
             streak = consecutive weeks with at least one run.
   bees:     status is "available", "few" or "soldout". Maintained by hand.
   social:   instagram / tiktok profile url, and latest = {url, caption} for the newest video. Maintained by hand.
-  house:    bookings are check-in and check-out dates only, no guest details.
-            seaTempC = sea temperature now, airMaxC and sky = forecast for tomorrow (Stoupa).
+  house:    weather only. seaTempC = sea temperature now, airMaxC and sky = forecast for tomorrow (Stoupa).
   images:   slot name -> published file path (for example "img/book-textbook.jpg"). Empty slots are simply not shown.
             Slots: book-textbook, book-leerboek, book-diet, book-forensic, latest-article,
             running-hero, apiary-hero, house-hero, video-instagram, video-tiktok.
@@ -252,34 +251,7 @@
     }
   },
   "house": {
-    "asOf": "2026-09-30",
     "weatherAsOf": "2026-09-30",
-    "bookings": [
-      {
-        "from": "2026-10-01",
-        "to": "2026-10-05"
-      },
-      {
-        "from": "2026-10-05",
-        "to": "2026-10-11"
-      },
-      {
-        "from": "2026-10-10",
-        "to": "2026-10-18"
-      },
-      {
-        "from": "2026-10-18",
-        "to": "2026-11-02"
-      },
-      {
-        "from": "2026-11-08",
-        "to": "2026-11-16"
-      },
-      {
-        "from": "2027-07-18",
-        "to": "2027-08-01"
-      }
-    ],
     "seaTempC": 26.1,
     "airMaxC": 21,
     "sky": "Clear",
@@ -798,7 +770,7 @@
           <span class="titles"><h3>Vacation house</h3><span class="period">Mani, Peloponnese</span></span>
         </div>
         <div class="metrics" data-render="house-metrics"></div>
-        <span class="more">Availability and Mani House with Sea View</span>
+        <span class="more">Weather and Mani House with Sea View</span>
       </a>
 
       <a class="dash-card" href="#beekeeping" data-tab="beekeeping">
@@ -970,7 +942,7 @@
         <span class="icon"><svg><use href="#icon-house"/></svg></span>
         <h2>Vacation house</h2>
       </div>
-      <p class="intro">Our holiday home near Stoupa in the Mani, Peloponnese, rented out as Mani House with Sea View. Availability comes straight from the booking calendar.</p>
+      <p class="intro">Our holiday home near Stoupa in the Mani, Peloponnese, rented out as Mani House with Sea View.</p>
 
       <div class="banner" data-render="fig" data-slot="house-hero" data-label="Photo of the house and the sea" data-ratio="21/9" data-hide-empty="1"></div>
 
@@ -1208,32 +1180,13 @@
     },
 
     "house-metrics": function(){
-      var H = D.house, today = new Date(); today.setHours(0, 0, 0, 0);
-      var b = (H.bookings || []).map(function(x){
-        return {from: new Date(x.from + "T00:00:00"), to: new Date(x.to + "T00:00:00")};
-      }).sort(function(a, c){ return a.from - c.from; });
-      var cur = null;
-      b.forEach(function(x){ if(!cur && today >= x.from && today < x.to){ cur = x; } });
-      var pill, line;
-      if(cur){
-        var end = cur.to;
-        b.forEach(function(x){ if(x.from > cur.from && x.from <= end && x.to > end){ end = x.to; } });
-        pill = '<span class="pill out"><span class="steps" aria-hidden="true"><i></i><i></i><i></i></span><span class="txt">Occupied</span></span>';
-        line = "Free again from " + fdate(end);
-      } else {
-        var next = null;
-        b.forEach(function(x){ if(!next && x.from > today){ next = x; } });
-        pill = '<span class="pill ok"><span class="steps" aria-hidden="true"><i class="f"></i><i class="f"></i><i class="f"></i></span><span class="txt">Available now</span></span>';
-        line = next ? "Next booked from " + fdate(next.from) : "No bookings on the calendar";
-      }
-      var out = '<div class="metric"><span class="m-label">Availability</span><div class="state">' + pill + '<span class="sub-line">' + line + '</span></div></div>';
+      var H = D.house, out = "";
       if(H.airMaxC != null){ out += metric("Forecast", fmt(H.airMaxC) + "<small>°C</small>", "", "", esc(H.sky || "") + (H.sky ? ", tomorrow" : "tomorrow")); }
       if(H.seaTempC != null){ out += metric("Sea", fmt(H.seaTempC, 1) + "<small>°C</small>", "", ""); }
       return out;
     },
     "house-source": function(){
-      return "Availability from the booking calendar (dates only). Sea temperature and forecast from " + esc(D.house.weatherSource || "public weather sites") + ". " +
-             "Bookings: " + asOf(D.house.asOf).toLowerCase() + " Weather: " + asOf(D.house.weatherAsOf).toLowerCase();
+      return "Sea temperature and forecast from " + esc(D.house.weatherSource || "public weather sites") + ". " + asOf(D.house.weatherAsOf);
     }
   };
 
