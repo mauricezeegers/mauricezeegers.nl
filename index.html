@@ -957,7 +957,7 @@
 
   <footer>
     <span>Maurice Zeegers</span>
-    <span>A hobby project. Figures should refresh automatically once a week ;)</span>
+    <span>A hobby project. Figures should refresh automatically once a week<span id="footnote-trust">, but don't trust them</span> ;)</span>
     <span id="updated"></span>
   </footer>
 
@@ -1206,6 +1206,7 @@
     if(legacy[tab]){ tab = legacy[tab]; }
     if(tabs.indexOf(tab) === -1){ tab = "home"; }
     tabs.forEach(function(t){ pages[t].classList.toggle("active", t === tab); });
+    document.getElementById("footnote-trust").hidden = tab === "home";
     document.querySelectorAll(".topnav button[data-tab]").forEach(function(b){
       b.classList.toggle("active", b.getAttribute("data-tab") === tab);
     });
