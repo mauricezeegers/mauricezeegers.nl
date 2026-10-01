@@ -671,7 +671,7 @@
   .pub-list{display:flex;flex-direction:column;gap:0;margin-top:14px;border-top:1px solid var(--line);}
   .pub{display:flex;flex-direction:column;gap:3px;padding:14px 0;border-bottom:1px solid var(--line);text-decoration:none;color:var(--ink);}
   .pub .pub-title{font-weight:600;font-size:.98rem;}
-  .pub .pub-meta{font-size:.85rem;color:var(--ink-soft);}
+  .pub .pub-meta, .book .pub-meta{font-size:.85rem;color:var(--ink-soft);}
   .pub .pub-text{font-size:.9rem;color:var(--ink);margin-top:2px;}
   .pub:hover .pub-title{text-decoration:underline;}
 
@@ -765,7 +765,7 @@
   <div class="page" id="page-home">
     <header class="hero">
       <h1>Maurice's Dashboards</h1>
-      <p class="play-note">This page is my playground. The dashboards below are small data and coding experiments that should refresh themselves every week.</p>
+      <p class="play-note">This page is my playground. The dashboards below are small data and coding experiments on <a href="https://github.com/mauricezeegers" target="_blank" rel="noopener">GitHub</a> that should refresh themselves every week. Don't take it too seriously.</p>
     </header>
 
     <div class="dash-grid">
@@ -863,10 +863,6 @@
           <span class="avatar">UM</span>
           <span class="text"><span class="name">Maastricht University</span><span class="desc">Faculty profile and publications</span></span>
         </a>
-        <a class="link-card" href="https://cris.maastrichtuniversity.nl/en/persons/maurice-zeegers/" target="_blank" rel="noopener">
-          <span class="avatar">CR</span>
-          <span class="text"><span class="name">CRIS repository</span><span class="desc">Full publication record</span></span>
-        </a>
         <a class="link-card" href="https://orcid.org/0000-0002-2387-083X" target="_blank" rel="noopener">
           <span class="avatar">iD</span>
           <span class="text"><span class="name">ORCID</span><span class="desc">0000-0002-2387-083X</span></span>
@@ -887,11 +883,6 @@
           <span class="avatar">Li</span>
           <span class="text"><span class="name">LinkedIn</span><span class="desc">Maastricht University</span></span>
         </a>
-        <a class="link-card" href="https://pubmed.ncbi.nlm.nih.gov/?term=maurice+zeegers" target="_blank" rel="noopener">
-          <span class="avatar">PM</span>
-          <span class="text"><span class="name">PubMed</span><span class="desc">Indexed publications</span></span>
-        </a>
-        <span data-render="wikidata-card" style="display:contents"></span>
       </div>
     </div>
   </div>
@@ -966,7 +957,7 @@
 
   <footer>
     <span>Maurice Zeegers</span>
-    <span>A hobby project. Figures should refresh automatically once a week, but don't trust them ;)</span>
+    <span>A hobby project. Figures should refresh automatically once a week ;)</span>
     <span id="updated"></span>
   </footer>
 
@@ -1060,10 +1051,6 @@
       if(el.getAttribute("data-hide-empty") && !safeUrl(D.images[el.getAttribute("data-slot")])){ return ""; }
       return fig(el.getAttribute("data-slot"), el.getAttribute("data-label") || "Image", el.getAttribute("data-ratio") || "4/3");
     },
-    "wikidata-card": function(){
-      var u = safeUrl((D.profiles || {}).wikidata);
-      return u ? '<a class="link-card" href="' + u + '" target="_blank" rel="noopener"><span class="avatar">Wd</span><span class="text"><span class="name">Wikidata</span><span class="desc">Structured facts and identifiers</span></span></a>' : "";
-    },
     "running-profiles": function(){
       var P = D.profiles || {}, out = "";
       [["itra", "ITRA", "IT", "Race results and performance index"], ["strava", "Strava", "ST", "Training"], ["utmb", "UTMB", "UT", "Race profile"]].forEach(function(p){
@@ -1081,12 +1068,10 @@
     "research-metrics": function(size){
       var r = D.research, y = r.year, lbl = "compared with the previous 12 months";
       var last12 = metric("Publications last 12 months", fmt(r.papers12m || 0), pctDelta(r.papers12m, r.papersPrev12m, lbl), "vs previous 12 months");
-      var total = r.papersTotal ? metric("All time", fmt(r.papersTotal), "", "", "published papers") : "";
-      if(size !== "tile"){ return last12 + total; }
+      if(size !== "tile"){ return last12; }
       return last12 +
              metric("Publications this year", fmt(r.papersThisYear || 0), "", "", y ? esc(y) : "") +
-             metric("Publications last year", fmt(r.papersLastYear || 0), "", "", y ? esc(y - 1) : "") +
-             total;
+             metric("Publications last year", fmt(r.papersLastYear || 0), "", "", y ? esc(y - 1) : "");
     },
     "research-source": function(){
       return "Published papers from " + esc(D.research.source || "the publications register") + ", counted by publication year; the last 12 months use the date a paper was added to the register. " + asOf(D.research.asOf);
@@ -1147,7 +1132,7 @@
     "run-chart-km": function(size){ return chartBlock("Distance per week", km, "km", size); },
     "run-chart-hm": function(size){ return chartBlock("Elevation gain per week", hm, "m", size); },
     "running-source": function(){
-      return "Weekly totals from " + esc(S.source || "Garmin") + ". Routes, start points and timestamps are never published. " + asOf(S.asOf);
+      return "Weekly totals from " + esc(S.source || "Garmin") + ". " + asOf(S.asOf);
     },
 
     "bees-metrics": function(){
