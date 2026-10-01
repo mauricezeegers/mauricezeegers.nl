@@ -1053,7 +1053,7 @@
     },
     "running-profiles": function(){
       var P = D.profiles || {}, out = "";
-      [["itra", "ITRA", "IT", "Race results and performance index"], ["strava", "Strava", "ST", "Training"], ["utmb", "UTMB", "UT", "Race profile"]].forEach(function(p){
+      [["itra", "ITRA", "IT", "Race results and performance index"], ["utmb", "UTMB", "UT", "Race profile"], ["strava", "Strava", "ST", "Training"]].forEach(function(p){
         var u = safeUrl(P[p[0]]);
         if(u){ out += '<a class="link-card" href="' + u + '" target="_blank" rel="noopener"><span class="avatar">' + p[2] + '</span><span class="text"><span class="name">' + p[1] + '</span><span class="desc">' + p[3] + '</span></span></a>'; }
       });
