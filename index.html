@@ -108,6 +108,8 @@
             streak = consecutive weeks with at least one run.
   bees:     status is "available", "few" or "soldout". Maintained by hand.
   social:   instagram / tiktok profile url, and latest = {url, caption} for the newest video. Maintained by hand.
+  races:    upcoming races from the running sheet (tab Maurice, Events list), only races with a fixed date (YYYY-MM-DD)
+            in the next 6 months. {name, date, km, url}; url may be null. The page computes the countdown and hides past races.
   house:    weather only. seaTempC = sea temperature now, airMaxC and sky = forecast for tomorrow (Stoupa).
   images:   slot name -> published file path (for example "img/book-textbook.jpg"). Empty slots are simply not shown.
             Slots: book-textbook, book-leerboek, book-diet, book-forensic, latest-article,
@@ -255,6 +257,11 @@
       }
     }
   },
+  "races": [
+    {"name": "Caubergtrail", "date": "2026-10-31", "km": 63, "url": null},
+    {"name": "Trail de Dinant Winter", "date": "2026-12-13", "km": 42, "url": "https://traildinant.be/les-trails-de-dinant/"},
+    {"name": "Houffa Trail", "date": "2027-01-23", "km": 55, "url": "https://www.trailrun.be/houffatrail/"}
+  ],
   "house": {
     "weatherAsOf": "2026-09-30",
     "seaTempC": 25.7,
@@ -638,6 +645,8 @@
   .link-card .text{display:flex;flex-direction:column;gap:2px;min-width:0;}
   .link-card .name{font-weight:600;font-size:.98rem;}
   .link-card .desc{font-size:.85rem;color:var(--ink-soft);}
+  .link-card .count{margin-top:6px;font-size:1.35rem;font-weight:700;color:var(--accent-ink);font-variant-numeric:tabular-nums;line-height:1.1;}
+  .link-card .count small{font-size:.8rem;font-weight:600;color:var(--ink-soft);margin-left:4px;}
   .link-card.todo{background:var(--todo-bg);border:1px dashed var(--todo-line);color:var(--ink-soft);}
   .link-card.todo .avatar{background:transparent;border:1px dashed var(--todo-line);color:var(--ink-soft);}
   .link-card .badge{
@@ -884,6 +893,22 @@
           <span class="text"><span class="name">LinkedIn</span><span class="desc">Maastricht University</span></span>
         </a>
       </div>
+
+      <h3 class="sub">My bookmarks</h3>
+      <div class="link-grid">
+        <a class="link-card" href="https://canvas.maastrichtuniversity.nl/" target="_blank" rel="noopener">
+          <span class="avatar">CV</span>
+          <span class="text"><span class="name">Canvas</span><span class="desc">UM login</span></span>
+        </a>
+        <a class="link-card" href="https://um.mycampusprint.nl/Login/Login" target="_blank" rel="noopener">
+          <span class="avatar">PR</span>
+          <span class="text"><span class="name">Print</span><span class="desc">UM login</span></span>
+        </a>
+        <a class="link-card" href="https://sf1p.myum.unimaas.nl/sap/bc/ui2/flp#Shell-home" target="_blank" rel="noopener">
+          <span class="avatar">SA</span>
+          <span class="text"><span class="name">SAP</span><span class="desc">UM login</span></span>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -904,6 +929,16 @@
         <div data-render="run-chart-hm" data-size="lg"></div>
       </div>
       <p class="source-note" data-render="running-source"></p>
+
+      <div data-render="running-races"></div>
+
+      <h3 class="sub">My bookmarks</h3>
+      <div class="link-grid">
+        <a class="link-card" href="https://docs.google.com/spreadsheets/d/1fCueYfWX1bvMp5nk_BiBsfQx-N9-wC9-zJU0xWpN4-U/edit?gid=0#gid=0" target="_blank" rel="noopener">
+          <span class="avatar">RS</span>
+          <span class="text"><span class="name">Running sheet</span><span class="desc">Training and races</span></span>
+        </a>
+      </div>
 
       <div data-render="running-profiles"></div>
     </div>
@@ -928,6 +963,14 @@
       </div>
 
       <div data-render="bee-social"></div>
+
+      <h3 class="sub">My bookmarks</h3>
+      <div class="link-grid">
+        <a class="link-card" href="https://docs.google.com/spreadsheets/d/1VM6YNTRQl_ZnE7rWDciaJkaK8dcs_kojE3_CYxGdv5o/edit?gid=216171859#gid=216171859" target="_blank" rel="noopener">
+          <span class="avatar">BS</span>
+          <span class="text"><span class="name">Bee sheet</span><span class="desc">Hive records</span></span>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -950,6 +993,26 @@
         <a class="link-card" href="https://manihousewithseaview.gr" target="_blank" rel="noopener">
           <span class="avatar">MH</span>
           <span class="text"><span class="name">Mani House with Sea View</span><span class="desc">Photos, details and booking</span></span>
+        </a>
+      </div>
+
+      <h3 class="sub">My bookmarks</h3>
+      <div class="link-grid">
+        <a class="link-card" href="https://calendar.google.com/calendar/u/1/r/month/2026/8/1" target="_blank" rel="noopener">
+          <span class="avatar">CA</span>
+          <span class="text"><span class="name">My calendar</span><span class="desc">Google Calendar</span></span>
+        </a>
+        <a class="link-card" href="https://www.airbnb.com" target="_blank" rel="noopener">
+          <span class="avatar">AB</span>
+          <span class="text"><span class="name">Airbnb</span><span class="desc">Listings and bookings</span></span>
+        </a>
+        <a class="link-card" href="https://www.vrbo.com/nl-nl/" target="_blank" rel="noopener">
+          <span class="avatar">VR</span>
+          <span class="text"><span class="name">Vrbo</span><span class="desc">Listings and bookings</span></span>
+        </a>
+        <a class="link-card" href="https://docs.google.com/spreadsheets/d/1EW5tpy8kBE32IPw6zZEk0zl07oOJ0OxHy8Ddk6tQn7U/edit?gid=1784297928#gid=1784297928" target="_blank" rel="noopener">
+          <span class="avatar">GU</span>
+          <span class="text"><span class="name">Guests</span><span class="desc">Guest sheet</span></span>
         </a>
       </div>
     </div>
@@ -976,6 +1039,7 @@
   D.images = D.images || {};
   D.press = D.press || [];
   D.profiles = D.profiles || {};
+  D.races = D.races || [];
 
   /* ---------- helpers ---------- */
   function esc(s){
@@ -1058,6 +1122,24 @@
         if(u){ out += '<a class="link-card" href="' + u + '" target="_blank" rel="noopener"><span class="avatar">' + p[2] + '</span><span class="text"><span class="name">' + p[1] + '</span><span class="desc">' + p[3] + '</span></span></a>'; }
       });
       return out ? '<h3 class="sub">Profiles</h3><div class="link-grid">' + out + '</div>' : "";
+    },
+    "running-races": function(){
+      var today = new Date(); today.setHours(0, 0, 0, 0);
+      var out = D.races.map(function(r){
+        var d = new Date(r.date + "T00:00:00");
+        return {r: r, d: d, days: Math.round((d - today) / 86400000)};
+      }).filter(function(x){ return !isNaN(x.days) && x.days >= 0; })
+        .sort(function(a, b){ return a.d - b.d; })
+        .map(function(x){
+          var u = safeUrl(x.r.url), tag = u ? "a" : "div";
+          var count = x.days === 0 ? "Race day" : fmt(x.days) + "<small>" + (x.days === 1 ? "day" : "days") + " to go</small>";
+          return "<" + tag + ' class="link-card"' + (u ? ' href="' + u + '" target="_blank" rel="noopener"' : "") + '>' +
+            '<span class="avatar">' + esc(x.r.km ? x.r.km : "") + '</span>' +
+            '<span class="text"><span class="name">' + esc(x.r.name) + '</span>' +
+            '<span class="desc">' + fdate(x.d) + " " + x.d.getFullYear() + (x.r.km ? " · " + esc(x.r.km) + " km" : "") + '</span>' +
+            '<span class="count">' + count + '</span></span></' + tag + '>';
+        }).join("");
+      return out ? '<h3 class="sub">Upcoming races</h3><p class="sub-note">Races with a fixed date in the coming months.</p><div class="link-grid">' + out + '</div>' : "";
     },
     "bee-social": function(){
       var vids = R["bee-videos"](), profs = R["bee-profiles"]();
