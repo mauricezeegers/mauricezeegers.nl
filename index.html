@@ -106,11 +106,18 @@
   profiles: optional profile links {itra, strava, utmb, wikidata}. Only entries with a url are shown; empty ones stay hidden.
   sport:    24 weekly totals, oldest first (first 12 = previous period, last 12 = latest). Totals only, never routes.
             streak = consecutive weeks with at least one run.
-  bees:     status is "available", "few" or "soldout". Maintained by hand.
+  bees:     status is "available", "few" or "soldout"; season is a label. Both maintained by hand.
+            hives = number of active hives in bees.log. bees.log comes from the newest HiveCompanion export
+            (scripts/hivecompanion_to_json.py): hives {name, apiary, status, queen, queenColor, bodies, supers},
+            inspections [date, hive, population, food, behaviour (5 = aggressive), note], treatments [date, hive, product],
+            feedings [date, hive, litres], harvests [date, hive, kg], splits [date, from, to], tasks [title, hive].
+            Never GPS coordinates, never the Storage apiary. The page computes the season (1 March to end of February).
   social:   instagram / tiktok profile url, and latest = {url, caption} for the newest video. Maintained by hand.
   races:    upcoming races from the running sheet (tab Maurice, Events list), only races with a fixed date (YYYY-MM-DD)
-            in the next 6 months. {name, date, km, url}; url may be null. The page computes the countdown and hides past races.
-  house:    weather only. seaTempC = sea temperature now, airMaxC and sky = forecast for tomorrow (Stoupa).
+            in the next 6 months. {name, date, km, url}; url may be null. The page computes the countdown in weeks and hides past races.
+  house:    seaTempC = sea temperature now, airMaxC and sky = forecast for tomorrow (Stoupa).
+            availability = {asOf, source, blocked}: blocked = merged [start, end) date ranges (end = first free day)
+            from the Airbnb and Vrbo calendars only. Dates only, never guest names or booking details.
   images:   slot name -> published file path (for example "img/book-textbook.jpg"). Empty slots are simply not shown.
             Slots: book-textbook, book-leerboek, book-diet, book-forensic, latest-article,
             running-hero, apiary-hero, house-hero, video-instagram, video-tiktok.
@@ -239,7 +246,710 @@
   "bees": {
     "status": "few",
     "season": 2026,
-    "hives": 12
+    "hives": 12,
+    "log": {
+      "asOf": "2026-10-02",
+      "source": "HiveCompanion",
+      "hives": [
+        {
+          "name": "Aelia (10)",
+          "apiary": "Links",
+          "status": "active",
+          "queen": true,
+          "queenColor": "white",
+          "bodies": 1,
+          "supers": 1
+        },
+        {
+          "name": "Big powerhouse (10)",
+          "apiary": "Links",
+          "status": "active",
+          "queen": true,
+          "queenColor": null,
+          "bodies": 1,
+          "supers": 2
+        },
+        {
+          "name": "Fatboy (6)",
+          "apiary": "Links",
+          "status": "empty",
+          "queen": false,
+          "queenColor": null,
+          "bodies": 1,
+          "supers": 0
+        },
+        {
+          "name": "Fifty nine (10)",
+          "apiary": "Links",
+          "status": "active",
+          "queen": false,
+          "queenColor": null,
+          "bodies": 2,
+          "supers": 1
+        },
+        {
+          "name": "Green Green (10)",
+          "apiary": "Links",
+          "status": "active",
+          "queen": true,
+          "queenColor": null,
+          "bodies": 1,
+          "supers": 1
+        },
+        {
+          "name": "Hochkonig Man (10)",
+          "apiary": "Links",
+          "status": "active",
+          "queen": true,
+          "queenColor": "white",
+          "bodies": 1,
+          "supers": 0
+        },
+        {
+          "name": "Honig (10)",
+          "apiary": "Links",
+          "status": "active",
+          "queen": false,
+          "queenColor": null,
+          "bodies": 1,
+          "supers": 2
+        },
+        {
+          "name": "Little powerhouse (10)",
+          "apiary": "Links",
+          "status": "active",
+          "queen": true,
+          "queenColor": "white",
+          "bodies": 1,
+          "supers": 1
+        },
+        {
+          "name": "Mini Plus (6)",
+          "apiary": "Links",
+          "status": "empty",
+          "queen": false,
+          "queenColor": null,
+          "bodies": 1,
+          "supers": 0
+        },
+        {
+          "name": "Montagu (10)",
+          "apiary": "Links",
+          "status": "active",
+          "queen": true,
+          "queenColor": "yellow",
+          "bodies": 1,
+          "supers": 0
+        },
+        {
+          "name": "Six Seven (6)",
+          "apiary": "Links",
+          "status": "empty",
+          "queen": false,
+          "queenColor": null,
+          "bodies": 1,
+          "supers": 0
+        },
+        {
+          "name": "Taygetos (10)",
+          "apiary": "Links",
+          "status": "active",
+          "queen": true,
+          "queenColor": "white",
+          "bodies": 1,
+          "supers": 0
+        },
+        {
+          "name": "Faulty Towers (8)",
+          "apiary": "Rechts",
+          "status": "active",
+          "queen": true,
+          "queenColor": "white",
+          "bodies": 1,
+          "supers": 1
+        },
+        {
+          "name": "Fiveways (8)",
+          "apiary": "Rechts",
+          "status": "empty",
+          "queen": false,
+          "queenColor": null,
+          "bodies": 1,
+          "supers": 0
+        },
+        {
+          "name": "Maastricht (10)",
+          "apiary": "Rechts",
+          "status": "active",
+          "queen": true,
+          "queenColor": "blue",
+          "bodies": 1,
+          "supers": 1
+        },
+        {
+          "name": "Rotterdam (10)",
+          "apiary": "Rechts",
+          "status": "active",
+          "queen": true,
+          "queenColor": "white",
+          "bodies": 1,
+          "supers": 1
+        }
+      ],
+      "inspections": [
+        [
+          "2026-06-10",
+          "Maastricht (10)",
+          2,
+          1,
+          2,
+          "1 wax moth frame replaced"
+        ],
+        [
+          "2026-06-11",
+          "Rotterdam (10)",
+          3,
+          1,
+          2,
+          ""
+        ],
+        [
+          "2026-06-13",
+          "Aelia (10)",
+          3,
+          3,
+          2,
+          ""
+        ],
+        [
+          "2026-06-13",
+          "Fifty nine (10)",
+          5,
+          4,
+          3,
+          "Q removed"
+        ],
+        [
+          "2026-06-13",
+          "Green Green (10)",
+          3,
+          3,
+          2,
+          ""
+        ],
+        [
+          "2026-06-13",
+          "Honig (10)",
+          5,
+          5,
+          2,
+          "Ready for a split if I find the queen"
+        ],
+        [
+          "2026-06-13",
+          "Little powerhouse (10)",
+          4,
+          3,
+          3,
+          ""
+        ],
+        [
+          "2026-06-13",
+          "Montagu (10)",
+          3,
+          1,
+          2,
+          "2 bk raampjes wintervoer toegevoegd uiterst rechts"
+        ],
+        [
+          "2026-06-19",
+          "Honig (10)",
+          4,
+          4,
+          3,
+          ""
+        ],
+        [
+          "2026-06-20",
+          "Big powerhouse (10)",
+          4,
+          5,
+          2,
+          "Only eggs seen, added two empty frames"
+        ],
+        [
+          "2026-06-22",
+          "Aelia (10)",
+          3,
+          3,
+          3,
+          "Queen marked"
+        ],
+        [
+          "2026-06-22",
+          "Little powerhouse (10)",
+          4,
+          4,
+          3,
+          "Two times queen not found"
+        ],
+        [
+          "2026-06-22",
+          "Maastricht (10)",
+          2,
+          2,
+          3,
+          ""
+        ],
+        [
+          "2026-06-22",
+          "Montagu (10)",
+          3,
+          3,
+          2,
+          ""
+        ],
+        [
+          "2026-06-22",
+          "Rotterdam (10)",
+          3,
+          3,
+          3,
+          ""
+        ],
+        [
+          "2026-06-24",
+          "Faulty Towers (8)",
+          2,
+          2,
+          3,
+          "Next time Mark queen"
+        ],
+        [
+          "2026-06-27",
+          "Faulty Towers (8)",
+          3,
+          3,
+          3,
+          "Queen marked"
+        ],
+        [
+          "2026-07-10",
+          "Green Green (10)",
+          2,
+          3,
+          3,
+          ""
+        ],
+        [
+          "2026-07-10",
+          "Maastricht (10)",
+          5,
+          3,
+          2,
+          ""
+        ],
+        [
+          "2026-07-10",
+          "Rotterdam (10)",
+          2,
+          2,
+          2,
+          ""
+        ],
+        [
+          "2026-07-12",
+          "Fifty nine (10)",
+          5,
+          3,
+          5,
+          ""
+        ],
+        [
+          "2026-08-24",
+          "Honig (10)",
+          1,
+          5,
+          2,
+          "Hive is too weak"
+        ],
+        [
+          "2026-08-28",
+          "Faulty Towers (8)",
+          4,
+          4,
+          1,
+          ""
+        ],
+        [
+          "2026-08-28",
+          "Maastricht (10)",
+          3,
+          3,
+          2,
+          ""
+        ],
+        [
+          "2026-08-28",
+          "Rotterdam (10)",
+          3,
+          2,
+          4,
+          ""
+        ],
+        [
+          "2026-08-29",
+          "Fifty nine (10)",
+          2,
+          2,
+          4,
+          "Moet ik samen voegen"
+        ]
+      ],
+      "treatments": [
+        [
+          "2026-06-22",
+          "Big powerhouse (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-04",
+          "Aelia (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-04",
+          "Faulty Towers (8)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-04",
+          "Fifty nine (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-04",
+          "Green Green (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-04",
+          "Hochkonig Man (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-04",
+          "Honig (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-04",
+          "Little powerhouse (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-04",
+          "Maastricht (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-04",
+          "Montagu (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-04",
+          "Rotterdam (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-04",
+          "Taygetos (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-11",
+          "Aelia (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-11",
+          "Faulty Towers (8)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-11",
+          "Hochkonig Man (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-11",
+          "Maastricht (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-11",
+          "Montagu (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-11",
+          "Taygetos (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-08-23",
+          "Aelia (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-08-23",
+          "Hochkonig Man (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-08-23",
+          "Little powerhouse (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-08-23",
+          "Maastricht (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-08-23",
+          "Montagu (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-08-23",
+          "Rotterdam (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-08-23",
+          "Taygetos (10)",
+          "Oxalic acid"
+        ]
+      ],
+      "feedings": [
+        [
+          "2026-06-08",
+          "Maastricht (10)",
+          1.0
+        ],
+        [
+          "2026-06-08",
+          "Rotterdam (10)",
+          1.0
+        ],
+        [
+          "2026-06-12",
+          "Maastricht (10)",
+          0.5
+        ],
+        [
+          "2026-06-12",
+          "Rotterdam (10)",
+          0.5
+        ],
+        [
+          "2026-06-19",
+          "Faulty Towers (8)",
+          2.0
+        ],
+        [
+          "2026-06-19",
+          "Maastricht (10)",
+          1.0
+        ],
+        [
+          "2026-06-19",
+          "Rotterdam (10)",
+          1.0
+        ],
+        [
+          "2026-06-20",
+          "Hochkonig Man (10)",
+          1.0
+        ],
+        [
+          "2026-06-20",
+          "Taygetos (10)",
+          1.0
+        ],
+        [
+          "2026-07-04",
+          "Faulty Towers (8)",
+          2.0
+        ],
+        [
+          "2026-07-04",
+          "Maastricht (10)",
+          1.0
+        ],
+        [
+          "2026-07-04",
+          "Rotterdam (10)",
+          1.0
+        ],
+        [
+          "2026-07-06",
+          "Taygetos (10)",
+          2.0
+        ],
+        [
+          "2026-08-23",
+          "Aelia (10)",
+          4.0
+        ],
+        [
+          "2026-08-23",
+          "Fifty nine (10)",
+          4.0
+        ],
+        [
+          "2026-08-23",
+          "Green Green (10)",
+          4.0
+        ],
+        [
+          "2026-08-23",
+          "Hochkonig Man (10)",
+          4.0
+        ],
+        [
+          "2026-08-23",
+          "Honig (10)",
+          4.0
+        ],
+        [
+          "2026-08-23",
+          "Little powerhouse (10)",
+          2.0
+        ],
+        [
+          "2026-08-23",
+          "Little powerhouse (10)",
+          4.0
+        ],
+        [
+          "2026-08-23",
+          "Maastricht (10)",
+          4.0
+        ],
+        [
+          "2026-08-23",
+          "Montagu (10)",
+          4.0
+        ],
+        [
+          "2026-08-23",
+          "Rotterdam (10)",
+          4.0
+        ],
+        [
+          "2026-08-23",
+          "Taygetos (10)",
+          2.0
+        ],
+        [
+          "2026-08-23",
+          "Taygetos (10)",
+          4.0
+        ],
+        [
+          "2026-08-24",
+          "Faulty Towers (8)",
+          1.5
+        ],
+        [
+          "2026-08-24",
+          "Fifty nine (10)",
+          2.0
+        ],
+        [
+          "2026-08-24",
+          "Hochkonig Man (10)",
+          2.0
+        ],
+        [
+          "2026-08-24",
+          "Montagu (10)",
+          2.0
+        ]
+      ],
+      "harvests": [
+        [
+          "2026-05-31",
+          "Fifty nine (10)",
+          5.0
+        ],
+        [
+          "2026-07-01",
+          "Fifty nine (10)",
+          20.0
+        ],
+        [
+          "2026-07-04",
+          "Aelia (10)",
+          1.0
+        ],
+        [
+          "2026-07-04",
+          "Big powerhouse (10)",
+          4.0
+        ],
+        [
+          "2026-07-04",
+          "Fifty nine (10)",
+          18.0
+        ],
+        [
+          "2026-07-04",
+          "Little powerhouse (10)",
+          4.0
+        ]
+      ],
+      "splits": [
+        [
+          "2026-06-13",
+          "Fifty nine (10)",
+          "Rubber Bee (6)"
+        ],
+        [
+          "2026-06-13",
+          "Green Green (10)",
+          "Haantje (6)"
+        ],
+        [
+          "2026-06-19",
+          "Honig (10)",
+          "Faulty Towers (8)"
+        ],
+        [
+          "2026-06-20",
+          "Haantje (6)",
+          "Taygetos (10)"
+        ],
+        [
+          "2026-06-20",
+          "Rubber Bee (6)",
+          "Hochkonig Man (10)"
+        ]
+      ],
+      "tasks": [
+        [
+          "Honig en 59 moeten samengevoegd worden",
+          "Fifty nine (10)"
+        ],
+        [
+          "Honig en 59 moeten samengevoegd worden",
+          "Honig (10)"
+        ]
+      ]
+    }
   },
   "social": {
     "instagram": {
@@ -258,15 +968,39 @@
     }
   },
   "races": [
-    {"name": "Trail de Dinant Winter", "date": "2026-12-13", "km": 42, "url": "https://traildinant.be/les-trails-de-dinant/"},
-    {"name": "Houffa Trail", "date": "2027-01-23", "km": 55, "url": "https://www.trailrun.be/houffatrail/"}
+    {
+      "name": "Trail de Dinant Winter",
+      "date": "2026-12-13",
+      "km": 42,
+      "url": "https://traildinant.be/les-trails-de-dinant/"
+    },
+    {
+      "name": "Houffa Trail",
+      "date": "2027-01-23",
+      "km": 55,
+      "url": "https://www.trailrun.be/houffatrail/"
+    }
   ],
   "house": {
     "weatherAsOf": "2026-09-30",
     "seaTempC": 25.7,
     "airMaxC": 21,
     "sky": "Clear",
-    "weatherSource": "seatemperature.info and holiday-weather.com"
+    "weatherSource": "seatemperature.info and holiday-weather.com",
+    "availability": {
+      "asOf": "2026-10-02",
+      "source": "Airbnb and Vrbo calendars",
+      "blocked": [
+        [
+          "2026-10-02",
+          "2026-10-09"
+        ],
+        [
+          "2026-10-10",
+          "2027-04-15"
+        ]
+      ]
+    }
   },
   "images": {}
 }
@@ -727,6 +1461,67 @@
   .hex-row{display:flex;gap:6px;margin:18px 0 6px;}
   .hex-row svg{width:26px;height:26px;color:var(--accent);}
 
+  /* ---- beekeeping: hive cards (stack | season figure | honey + next steps) ---- */
+  :root{
+    --hv-insp:#4CB8D6; --hv-treat:#B98CF0; --hv-feed:#9AD27A; --hv-harv:#E8B64A;
+    --hv-pop:#E9E9E4; --hv-food:#F09A45; --hv-beh:#EF6AA0; --hv-wood:#6B5638;
+    --q-white:#F2F2F0; --q-yellow:#F5D33B; --q-red:#E5534B; --q-green:#3FB46A; --q-blue:#3B82F6;
+  }
+  .hv-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.8rem;color:var(--ink-soft);margin:6px 0 4px;}
+  .hv-legend span{display:inline-flex;align-items:center;gap:6px;}
+  .hv-legend i{width:10px;height:10px;border-radius:2px;display:inline-block;}
+  .hv-legend i.ln{width:16px;height:2px;border-radius:0;}
+  .hv-apiary{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 10px;margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);}
+  .hv-apiary h4{font-family:"Fraunces", Georgia, serif;font-size:1.05rem;margin:0;}
+  .hv-apiary span{color:var(--ink-soft);font-size:.85rem;}
+  .hv-rows{display:grid;gap:10px;}
+  .hv-hive{display:grid;grid-template-columns:72px minmax(0, 1fr) 200px;gap:14px;align-items:start;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;}
+  @media (max-width:760px){ .hv-hive{grid-template-columns:60px minmax(0, 1fr);} .hv-side{grid-column:1 / -1;} }
+  .hv-stack svg{width:100%;height:auto;}
+  .hv-mid{display:grid;gap:4px;min-width:0;}
+  .hv-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+  .hv-head h5{font-family:"Fraunces", Georgia, serif;font-size:1rem;font-weight:600;margin:0;}
+  .hv-meta{color:var(--ink-soft);font-size:.82rem;}
+  .hv-queen{width:13px;height:13px;border-radius:50%;flex:none;border:1px solid #0008;display:inline-block;}
+  .hv-queen.unmarked{background:transparent;border:1.5px dashed var(--ink-soft);}
+  .hv-tag{font-size:.75rem;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink-soft);white-space:nowrap;}
+  .hv-tag.bad{color:var(--st-out);border-color:var(--st-out);}
+  .hv-fig text{fill:var(--ink-soft);font-size:10px;font-family:"Source Sans 3", sans-serif;}
+  .hv-counts{display:flex;flex-wrap:wrap;gap:2px 14px;font-size:.82rem;color:var(--ink-soft);font-variant-numeric:tabular-nums;}
+  .hv-counts b{color:var(--ink);font-weight:600;}
+  .hv-side{display:grid;gap:10px;align-content:start;font-size:.88rem;}
+  .hv-honey{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--bg);}
+  .hv-honey .v{font-family:"Fraunces", Georgia, serif;font-weight:600;font-size:1.5rem;line-height:1.1;color:var(--hv-harv);font-variant-numeric:tabular-nums;}
+  .hv-honey .l{font-size:.78rem;color:var(--ink-soft);}
+  .hv-next .t{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px;}
+  .hv-next ul{list-style:none;margin:0;padding:0;display:grid;gap:5px;}
+  .hv-next li{display:flex;gap:7px;align-items:baseline;line-height:1.35;}
+  .hv-next .dot{width:8px;height:8px;border-radius:50%;flex:none;transform:translateY(-1px);}
+  .hv-empty{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:10px;color:var(--ink-soft);font-size:.8rem;}
+  .hv-empty div{display:grid;justify-items:center;gap:2px;width:60px;text-align:center;}
+  .hv-empty svg{width:100%;height:auto;}
+  .hv-tree{overflow-x:auto;margin-top:10px;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;}
+  .hv-tree svg{min-width:520px;}
+  .colony-dots{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
+  .colony-dots i{width:12px;height:12px;border-radius:50%;display:inline-block;border:1px solid #0008;}
+  .colony-dots i.unmarked{background:transparent;border:1.5px dashed var(--ink-soft);}
+  .colony-dots i.ql{background:transparent;border:1.5px solid var(--st-out);}
+
+  /* ---- vacation house: availability months ---- */
+  .avail{display:grid;grid-template-columns:repeat(auto-fill, minmax(min(100%, 190px), 1fr));gap:12px;margin-top:14px;}
+  .avail-month{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
+  .avail-month h4{font-size:.9rem;font-weight:600;margin:0 0 6px;display:flex;justify-content:space-between;gap:8px;}
+  .avail-month h4 span{font-weight:400;color:var(--ink-soft);font-size:.8rem;font-variant-numeric:tabular-nums;}
+  .avail-days{display:grid;grid-template-columns:repeat(7, 1fr);gap:3px;}
+  .avail-days b{font-size:.62rem;font-weight:600;color:var(--ink-soft);text-align:center;}
+  .avail-days i{aspect-ratio:1;border-radius:3px;font-style:normal;font-size:.62rem;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;}
+  .avail-days i.free{background:var(--accent-soft);color:var(--accent-ink);border:1px solid var(--accent);}
+  .avail-days i.taken{background:var(--bg);color:var(--bar-prev);}
+  .avail-days i.past{background:transparent;color:var(--line);}
+  .avail-key{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.8rem;color:var(--ink-soft);margin-top:10px;}
+  .avail-key span{display:inline-flex;align-items:center;gap:6px;}
+  .avail-key i{width:11px;height:11px;border-radius:3px;display:inline-block;}
+
   footer{
     padding-block:28px 56px;
     color:var(--ink-soft);
@@ -773,7 +1568,7 @@
   <div class="page" id="page-home">
     <header class="hero">
       <h1>Maurice's Dashboards</h1>
-      <p class="play-note">This page is my playground. The dashboards below are small data and coding experiments on GitHub that should refresh themselves every week. Don't take it too seriously.</p>
+      <p class="play-note">This page is my playground. The dashboards below are small data, API and coding experiments on GitHub that should refresh themselves every week. Don't take it too seriously.</p>
     </header>
 
     <div class="dash-grid">
@@ -789,10 +1584,10 @@
       <a class="dash-card" href="#beekeeping" data-tab="beekeeping">
         <div class="dash-head">
           <span class="icon"><svg><use href="#icon-bee"/></svg></span>
-          <span class="titles"><h3>Beekeeping</h3><span class="period">Honey this season</span></span>
+          <span class="titles"><h3>Beekeeping</h3><span class="period">This season</span></span>
         </div>
         <div class="metrics" data-render="bees-metrics"></div>
-        <span class="more">The apiary and latest videos</span>
+        <span class="more">Every hive this season and the latest videos</span>
       </a>
 
       <a class="dash-card" href="#running" data-tab="running">
@@ -955,11 +1750,8 @@
       <div class="banner" data-render="fig" data-slot="apiary-hero" data-label="Apiary photo" data-ratio="21/9" data-hide-empty="1"></div>
 
       <div class="metrics tiles" data-render="bees-metrics" data-size="tile"></div>
-      <div class="hex-row" aria-hidden="true">
-        <svg viewBox="0 0 24 24"><use href="#icon-bee"/></svg>
-        <svg viewBox="0 0 24 24"><use href="#icon-bee"/></svg>
-        <svg viewBox="0 0 24 24"><use href="#icon-bee"/></svg>
-      </div>
+      <div data-render="bee-hives"></div>
+      <div data-render="bee-tree"></div>
 
       <div data-render="bee-social"></div>
 
@@ -986,6 +1778,8 @@
 
       <div class="metrics tiles" data-render="house-metrics" data-size="tile"></div>
       <p class="source-note" data-render="house-source"></p>
+
+      <div data-render="house-availability"></div>
 
       <h3 class="sub">Book or read more</h3>
       <div class="link-grid">
@@ -1107,6 +1901,170 @@
       (size === "sm" ? "" : '<span>Peak week ' + fmt(peak) + ' ' + unit + '</span>') + '</div></div>';
   }
 
+  /* ---------- beekeeping: season per hive from the HiveCompanion log ---------- */
+  var BEE = (function(){
+    var DAYMS = 86400000;
+    var QC = {white: "var(--q-white)", yellow: "var(--q-yellow)", red: "var(--q-red)", green: "var(--q-green)", blue: "var(--q-blue)"};
+    var MON = ["M", "A", "M", "J", "J", "A", "S", "O", "N", "D", "J", "F"];
+    var NEXT = {bad: "var(--st-out)", warn: "var(--st-few)", ok: "var(--st-ok)", task: "var(--accent)", note: "var(--ink-soft)"};
+    function dt(s){ return new Date(String(s).slice(0, 10) + "T00:00:00"); }
+    function short(n){ return String(n).replace(/\s*\(\d+\)$/, ""); }
+    function frames(n){ var m = String(n).match(/\((\d+)\)/); return m ? m[1] : ""; }
+    function qc(c){ return QC[c] || "var(--ink-soft)"; }
+    function total(list){ return list.reduce(function(a, r){ return a + (+r[2] || 0); }, 0); }
+    function dm(d){ return d.getDate() + "/" + (d.getMonth() + 1); }
+    var today = new Date(); today.setHours(0, 0, 0, 0);
+    function ago(d){ return d ? Math.round((today - d) / DAYMS) : null; }
+
+    /* season runs from 1 March to the end of February */
+    function season(){
+      var L = D.bees && D.bees.log;
+      if(!L || !L.hives || !L.hives.length){ return null; }
+      var y = today.getMonth() >= 2 ? today.getFullYear() : today.getFullYear() - 1;
+      var s0 = new Date(y, 2, 1), s1 = new Date(y + 1, 2, 1);
+      function inS(list){ return (list || []).filter(function(r){ var d = dt(r[0]); return d >= s0 && d < s1; }); }
+      var B = {s0: s0, s1: s1, label: y + "/" + String(y + 1).slice(2),
+               ins: inS(L.inspections), tr: inS(L.treatments), fe: inS(L.feedings), ha: inS(L.harvests),
+               tasks: L.tasks || [], splits: L.splits || [], hives: L.hives};
+      B.active = L.hives.filter(function(h){ return h.status === "active"; });
+      B.honey = total(B.ha);
+      return B;
+    }
+    function of(list, n){ return list.filter(function(r){ return r[1] === n; }); }
+    function last(list){ return list.length ? list.map(function(r){ return dt(r[0]); }).sort(function(a, b){ return b - a; })[0] : null; }
+
+    function nextSteps(h, o, B){
+      var out = [], month = today.getMonth() + 1, active = month >= 3 && month <= 9, winter = month >= 10 || month <= 1;
+      if(!h.queen){ out.push(["bad", "Queenless: merge or requeen"]); }
+      if(!o.li){ out.push(["bad", winter ? "First inspection, before winter" : "First inspection"]); }
+      else if(active && ago(o.li) > 14){ out.push(["warn", "Inspect (last one " + ago(o.li) + " days ago)"]); }
+      else if(month >= 10 && month <= 11 && ago(o.li) > 60){ out.push(["warn", "Pre-winter check (last inspection " + ago(o.li) + " days ago)"]); }
+      var li = o.ins.slice().sort(function(a, b){ return dt(b[0]) - dt(a[0]); })[0];
+      if(li && +li[3] <= 2){ out.push(["warn", "Check winter stores (food " + li[3] + "/5 on " + dm(dt(li[0])) + ")"]); }
+      of(B.tasks, h.name).forEach(function(t){ out.push(["task", "Task: " + t[0]]); });
+      if(li && li[5] && !/marked|removed|replaced|added/i.test(li[5])){ out.push(["note", "Note " + dm(dt(li[0])) + ": " + li[5]]); }
+      if(winter && h.queen){ out.push(["ok", "Winter oxalic treatment in December (broodless)"]); }
+      if(!out.length){ out.push(["ok", "On track"]); }
+      return out;
+    }
+
+    function apiaries(B){
+      var names = [];
+      B.hives.forEach(function(h){ if(names.indexOf(h.apiary) === -1){ names.push(h.apiary); } });
+      return names.map(function(g){
+        var rows = B.hives.filter(function(h){ return h.apiary === g && h.status === "active"; }).map(function(h){
+          var o = {h: h, ins: of(B.ins, h.name), tr: of(B.tr, h.name), fe: of(B.fe, h.name), ha: of(B.ha, h.name)};
+          o.li = last(o.ins);
+          o.steps = nextSteps(h, o, B);
+          o.rank = (!h.queen ? 0 : !o.li ? 1 : o.steps.some(function(s){ return s[0] === "warn"; }) ? 2 : 3) * 1000 - (ago(o.li) || 999);
+          return o;
+        }).sort(function(a, b){ return a.rank - b.rank; });
+        return {name: g, rows: rows, honey: rows.reduce(function(a, o){ return a + total(o.ha); }, 0),
+                empty: B.hives.filter(function(h){ return h.apiary === g && h.status !== "active"; })};
+      }).filter(function(g){ return g.rows.length || g.empty.length; });
+    }
+
+    /* the hive as it stands: brood boxes, supers, roof, queen dot */
+    function stack(h, small){
+      var fr = +frames(h.name) || 10, bw = fr * 5.4, W = 64, cx = W / 2, empty = h.status !== "active";
+      var nB = h.bodies || 1, nS = h.supers || 0, H = small ? 70 : Math.max(110, 22 + nB * 26 + nS * 15 + 20), y = H - 6;
+      var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(short(h.name)) + ': ' + nB + ' brood ' + (nB === 1 ? "box" : "boxes") + ', ' + nS + ' ' + (nS === 1 ? "super" : "supers") + '">';
+      var dash = ' fill="none" stroke="var(--ink-soft)" stroke-dasharray="3 2"';
+      s += '<rect x="' + (cx - bw / 2 - 3) + '" y="' + y + '" width="' + (bw + 6) + '" height="5" fill="var(--line)"/>';
+      for(var b = 0; b < nB; b++){ y -= 26; s += '<rect x="' + (cx - bw / 2) + '" y="' + y + '" width="' + bw + '" height="24" rx="2"' + (empty ? dash : ' fill="var(--hv-wood)"') + '/>'; }
+      for(var p = 0; p < nS; p++){ y -= 15; s += '<rect x="' + (cx - bw / 2) + '" y="' + y + '" width="' + bw + '" height="13" rx="2"' + (empty ? dash : ' fill="var(--hv-harv)"') + '/>'; }
+      y -= 5; s += '<rect x="' + (cx - bw / 2 - 2) + '" y="' + y + '" width="' + (bw + 4) + '" height="4" fill="var(--ink-soft)"/>';
+      if(!empty && h.queen){
+        s += h.queenColor ? '<circle cx="' + cx + '" cy="' + (y - 9) + '" r="5.5" fill="' + qc(h.queenColor) + '"/>'
+                          : '<circle cx="' + cx + '" cy="' + (y - 9) + '" r="5" fill="none" stroke="var(--ink-soft)" stroke-dasharray="2 1.5"/>';
+      }
+      if(!empty && !h.queen){ s += '<text x="' + cx + '" y="' + (y - 5) + '" text-anchor="middle" style="fill:var(--st-out);font-size:10px">no queen</text>'; }
+      return s + '</svg>';
+    }
+
+    /* season figure: four event lanes and a score panel */
+    function figure(o, B){
+      var W = 560, L = 54, R = 8, lane = 18, top = 4, hp = 54, base = top + lane * 4, hTop = base + 8, hBot = hTop + hp, H = hBot + 16;
+      function x(d){ return L + (d - B.s0) / (B.s1 - B.s0) * (W - L - R); }
+      function yh(v){ return hBot - 4 - (v - 1) / 4 * (hp - 8); }
+      var s = '<svg class="chart hv-fig" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Season ' + B.label + ' for ' + esc(short(o.h.name)) + '">';
+      for(var m = 0; m <= 12; m++){
+        var d = new Date(B.s0.getFullYear(), 2 + m, 1), xx = x(d);
+        s += '<line x1="' + xx + '" x2="' + xx + '" y1="' + top + '" y2="' + hBot + '" stroke="var(--line)"/>';
+        if(m < 12){ s += '<text x="' + (xx + (x(new Date(B.s0.getFullYear(), 3 + m, 1)) - xx) / 2) + '" y="' + (H - 3) + '" text-anchor="middle">' + MON[m] + '</text>'; }
+      }
+      ["Inspect", "Treat", "Feed", "Harvest"].forEach(function(t, i){
+        var y = top + lane * i;
+        s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + (y + lane) + '" y2="' + (y + lane) + '" stroke="var(--line)"/><text x="0" y="' + (y + lane / 2 + 3.5) + '">' + t + '</text>';
+      });
+      s += '<rect x="' + L + '" y="' + hTop + '" width="' + (W - L - R) + '" height="' + hp + '" fill="var(--bg)"/>';
+      [1, 3, 5].forEach(function(v){
+        s += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yh(v) + '" y2="' + yh(v) + '" stroke="var(--line)"' + (v === 3 ? "" : ' stroke-dasharray="2 3"') + '/><text x="' + (L - 4) + '" y="' + (yh(v) + 3.5) + '" text-anchor="end">' + v + '</text>';
+      });
+      s += '<text x="0" y="' + (hTop + hp / 2 + 3.5) + '">Scores</text>';
+      var ins = o.ins.slice().sort(function(a, b){ return dt(a[0]) - dt(b[0]); });
+      [[2, "var(--hv-pop)"], [3, "var(--hv-food)"], [4, "var(--hv-beh)"]].forEach(function(c, k){
+        var pts = ins.map(function(r){ return [x(dt(r[0])), yh(+r[c[0]]) + (k - 1) * 1.2]; });
+        if(pts.length > 1){ s += '<polyline points="' + pts.map(function(p){ return p[0].toFixed(1) + "," + p[1].toFixed(1); }).join(" ") + '" fill="none" stroke="' + c[1] + '" stroke-width="1.6" stroke-linejoin="round"/>'; }
+        pts.forEach(function(p){ s += '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="2" fill="' + c[1] + '"/>'; });
+      });
+      if(!ins.length){ s += '<text x="' + (L + 10) + '" y="' + (hTop + hp / 2 + 3.5) + '">No inspections this season</text>'; }
+      o.ins.forEach(function(r){ s += '<circle cx="' + x(dt(r[0])) + '" cy="' + (top + lane / 2) + '" r="4" fill="var(--hv-insp)"/>'; });
+      o.tr.forEach(function(r){ var cx = x(dt(r[0])), cy = top + lane * 1.5; s += '<rect x="' + (cx - 3.3) + '" y="' + (cy - 3.3) + '" width="6.6" height="6.6" fill="var(--hv-treat)" transform="rotate(45 ' + cx + ' ' + cy + ')"/>'; });
+      o.fe.forEach(function(r){ var h = Math.min(lane - 4, r[2] / 4 * (lane - 4)); s += '<rect x="' + (x(dt(r[0])) - 2) + '" y="' + (top + lane * 3 - 2 - h) + '" width="4" height="' + h + '" fill="var(--hv-feed)" rx="1"/>'; });
+      o.ha.forEach(function(r){ var h = Math.max(3, Math.min(lane - 4, r[2] / 20 * (lane - 4))); s += '<rect x="' + (x(dt(r[0])) - 2.5) + '" y="' + (top + lane * 4 - 2 - h) + '" width="5" height="' + h + '" fill="var(--hv-harv)" rx="1"/>'; });
+      var tx = x(today);
+      s += '<line x1="' + tx + '" x2="' + tx + '" y1="' + top + '" y2="' + hBot + '" stroke="var(--ink)" stroke-dasharray="2 2"/><text x="' + (tx + 3) + '" y="' + (top + 8) + '" style="fill:var(--ink)">today</text>';
+      return s + '</svg>';
+    }
+
+    function queenTag(h){
+      if(!h.queen){ return '<span class="hv-tag bad">Queenless</span>'; }
+      if(!h.queenColor){ return '<span class="hv-queen unmarked" title="Unmarked queen"></span>'; }
+      return '<span class="hv-queen" style="background:' + qc(h.queenColor) + '" title="' + esc(h.queenColor) + ' queen"></span>';
+    }
+
+    function card(o, B){
+      var hk = total(o.ha);
+      var insp = o.li ? '<span class="hv-tag">Inspected ' + ago(o.li) + ' d ago</span>' : '<span class="hv-tag bad">Not inspected yet</span>';
+      return '<div class="hv-hive"><div class="hv-stack">' + stack(o.h) + '</div>' +
+        '<div class="hv-mid"><div class="hv-head">' + queenTag(o.h) + '<h5>' + esc(short(o.h.name)) + '</h5><span class="hv-meta">' + frames(o.h.name) + '-frame</span>' + insp + '</div>' +
+        figure(o, B) +
+        '<div class="hv-counts"><span><b>' + o.ins.length + '</b> inspections</span><span><b>' + o.tr.length + '</b> treatments</span><span><b>' + fmt(total(o.fe), 1) + '</b> l syrup</span></div></div>' +
+        '<div class="hv-side"><div class="hv-honey"><div class="v">' + fmt(hk, 1) + ' kg</div><div class="l">' +
+        (o.ha.length ? "Honey, " + o.ha.length + (o.ha.length === 1 ? " harvest: " : " harvests: ") + o.ha.map(function(r){ return dm(dt(r[0])); }).join(", ") : "No harvest this season") + '</div></div>' +
+        '<div class="hv-next"><div class="t">Next steps</div><ul>' + o.steps.map(function(s){ return '<li><span class="dot" style="background:' + NEXT[s[0]] + '"></span><span>' + esc(s[1]) + '</span></li>'; }).join("") + '</ul></div></div></div>';
+    }
+
+    function tree(){
+      var L = D.bees && D.bees.log;
+      if(!L || !L.splits || !L.splits.length){ return ""; }
+      var kids = {}, isChild = {}, rows = [], pos = {};
+      L.splits.forEach(function(r){ (kids[r[1]] = kids[r[1]] || []).push([r[2], r[0]]); isChild[r[2]] = 1; });
+      function walk(n, depth){ rows.push([n, depth]); (kids[n] || []).forEach(function(c){ walk(c[0], depth + 1); }); }
+      Object.keys(kids).filter(function(k){ return !isChild[k]; }).forEach(function(r){ walk(r, 0); });
+      var W = 600, rowH = 34, H = rows.length * rowH + 6;
+      rows.forEach(function(r, i){ pos[r[0]] = [Math.min(r[1], 2) * 200, i * rowH + 6]; });
+      var s = '<svg class="chart hv-fig" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Colony family tree">';
+      rows.forEach(function(r){
+        var p = pos[r[0]];
+        (kids[r[0]] || []).forEach(function(c){
+          var q = pos[c[0]];
+          s += '<path d="M' + (p[0] + 150) + ' ' + (p[1] + 12) + ' H' + (q[0] - 26) + ' V' + (q[1] + 12) + ' H' + q[0] + '" fill="none" stroke="var(--todo-line)" stroke-width="1.5"/>';
+          s += '<text x="' + (q[0] - 4) + '" y="' + (q[1] + 8) + '" text-anchor="end">' + dm(dt(c[1])) + '</text>';
+        });
+        var h = L.hives.filter(function(x){ return x.name === r[0]; })[0] || {}, empty = h.status !== "active";
+        s += '<rect x="' + p[0] + '" y="' + p[1] + '" width="150" height="24" rx="12" fill="' + (empty ? "var(--bg)" : "var(--surface)") + '" stroke="' + (empty ? "var(--todo-line)" : "var(--accent)") + '"' + (empty ? ' stroke-dasharray="3 2"' : "") + '/>';
+        var c = h.queen && h.queenColor ? qc(h.queenColor) : null;
+        if(c){ s += '<circle cx="' + (p[0] + 14) + '" cy="' + (p[1] + 12) + '" r="5" fill="' + c + '"/>'; }
+        s += '<text x="' + (p[0] + (c ? 26 : 12)) + '" y="' + (p[1] + 16) + '" style="fill:' + (empty ? "var(--ink-soft)" : "var(--ink)") + ';font-size:12px">' + esc(short(r[0])) + ' (' + frames(r[0]) + ')' + (empty ? " empty" : "") + (!empty && !h.queen ? " · queenless" : "") + '</text>';
+      });
+      return s + '</svg>';
+    }
+
+    return {season: season, apiaries: apiaries, card: card, stack: stack, tree: tree, short: short, qc: qc};
+  })();
+
   /* ---------- renderers ---------- */
   var S = D.sport, km = S.km || [], hm = S.hm || [];
   var R = {
@@ -1131,14 +2089,15 @@
         .sort(function(a, b){ return a.d - b.d; })
         .map(function(x){
           var u = safeUrl(x.r.url), tag = u ? "a" : "div";
-          var count = x.days === 0 ? "Race day" : fmt(x.days) + "<small>" + (x.days === 1 ? "day" : "days") + " to go</small>";
+          var weeks = Math.floor(x.days / 7);
+          var count = x.days === 0 ? "Race day" : (weeks === 0 ? "This week" : fmt(weeks) + "<small>" + (weeks === 1 ? "week" : "weeks") + " to go</small>");
           return "<" + tag + ' class="link-card"' + (u ? ' href="' + u + '" target="_blank" rel="noopener"' : "") + '>' +
             '<span class="avatar">' + esc(x.r.km ? x.r.km : "") + '</span>' +
             '<span class="text"><span class="name">' + esc(x.r.name) + '</span>' +
             '<span class="desc">' + fdate(x.d) + " " + x.d.getFullYear() + (x.r.km ? " · " + esc(x.r.km) + " km" : "") + '</span>' +
             '<span class="count">' + count + '</span></span></' + tag + '>';
         }).join("");
-      return out ? '<h3 class="sub">Upcoming races</h3><p class="sub-note">Races with a fixed date in the coming months.</p><div class="link-grid">' + out + '</div>' : "";
+      return out ? '<h3 class="sub">Upcoming races</h3><p class="sub-note">Races in the next six months.</p><div class="link-grid">' + out + '</div>' : "";
     },
     "bee-social": function(){
       var vids = R["bee-videos"](), profs = R["bee-profiles"]();
@@ -1149,7 +2108,8 @@
     "research-metrics": function(size){
       var r = D.research, y = r.year, lbl = "compared with the previous 12 months";
       var last12 = metric("Publications last 12 months", fmt(r.papers12m || 0), pctDelta(r.papers12m, r.papersPrev12m, lbl), "vs previous 12 months");
-      if(size !== "tile"){ return last12; }
+      /* h-index is a static figure, not part of the weekly refresh */
+      if(size !== "tile"){ return last12 + metric("h-index", "83", "", ""); }
       return last12 +
              metric("Publications this year", fmt(r.papersThisYear || 0), "", "", y ? esc(y) : "") +
              metric("Publications last year", fmt(r.papersLastYear || 0), "", "", y ? esc(y - 1) : "");
@@ -1227,8 +2187,48 @@
       for(var i = 0; i < 3; i++){ dots += '<i class="' + (i < m.n ? "f" : "") + '"></i>'; }
       var pill = '<div class="state"><span class="pill ' + m.c + '"><span class="steps" aria-hidden="true">' + dots + '</span><span class="txt">' + m.t + '</span></span>' +
                  (D.bees.season ? '<span class="sub-line">Season ' + esc(D.bees.season) + '</span>' : "") + '</div>';
-      return '<div class="metric"><span class="m-label">Honey</span>' + pill + '</div>' +
-             metric("Hives", fmt(D.bees.hives || 0), "", "");
+      var out = '<div class="metric"><span class="m-label">Honey</span>' + pill + '</div>';
+      var B = BEE.season();
+      if(!B){ return out + metric("Hives", fmt(D.bees.hives || 0), "", ""); }
+      out += metric("Harvested", fmt(B.honey, 1) + "<small>kg</small>", "", "", "this season");
+      var dots = B.active.map(function(h){
+        if(!h.queen){ return '<i class="ql" title="' + esc(BEE.short(h.name)) + ': queenless"></i>'; }
+        if(!h.queenColor){ return '<i class="unmarked" title="' + esc(BEE.short(h.name)) + ': unmarked queen"></i>'; }
+        return '<i style="background:' + BEE.qc(h.queenColor) + '" title="' + esc(BEE.short(h.name)) + ': ' + esc(h.queenColor) + ' queen"></i>';
+      }).join("");
+      var ql = B.active.filter(function(h){ return !h.queen; }).length;
+      out += '<div class="metric"><span class="m-label">Colonies</span><span class="m-value">' + fmt(B.active.length) + '</span>' +
+             '<span class="colony-dots" aria-label="Queen colour per colony">' + dots + '</span>' +
+             (ql ? '<span class="m-note">' + ql + ' queenless</span>' : '') + '</div>';
+      return out;
+    },
+    "bee-hives": function(){
+      var B = BEE.season();
+      if(!B){ return ""; }
+      var out = '<h3 class="sub">Hives this season</h3><p class="sub-note">Season ' + B.label + ', March to March. Each row: the hive as it stands, what happened in it this season, the honey it gave and what is next. Scores come from inspections, 1 to 5; for behaviour 5 is aggressive.</p>' +
+        '<div class="hv-legend">' +
+        '<span><i style="background:var(--hv-insp);border-radius:50%"></i>Inspection</span>' +
+        '<span><i style="background:var(--hv-treat);transform:rotate(45deg) scale(.85)"></i>Treatment</span>' +
+        '<span><i style="background:var(--hv-feed)"></i>Feeding (l)</span>' +
+        '<span><i style="background:var(--hv-harv)"></i>Harvest (kg)</span>' +
+        '<span><i class="ln" style="background:var(--hv-pop)"></i>Population</span>' +
+        '<span><i class="ln" style="background:var(--hv-food)"></i>Food stores</span>' +
+        '<span><i class="ln" style="background:var(--hv-beh)"></i>Behaviour</span>' +
+        '<span><i style="background:var(--hv-wood)"></i>Brood box</span>' +
+        '<span><i style="background:var(--hv-harv);height:6px"></i>Super</span></div>';
+      BEE.apiaries(B).forEach(function(g){
+        out += '<div class="hv-apiary"><h4>' + esc(g.name) + '</h4><span>' + g.rows.length + ' active ' + (g.rows.length === 1 ? "hive" : "hives") + ' · ' + fmt(g.honey, 1) + ' kg honey this season</span></div><div class="hv-rows">';
+        g.rows.forEach(function(o){ out += BEE.card(o, B); });
+        if(g.empty.length){
+          out += '<div class="hv-empty"><span>Empty:</span>' + g.empty.map(function(h){ return '<div>' + BEE.stack(h, true) + '<span>' + esc(BEE.short(h.name)) + '</span></div>'; }).join("") + '</div>';
+        }
+        out += '</div>';
+      });
+      return out + '<p class="source-note">From ' + esc(D.bees.log.source || "HiveCompanion") + '. ' + asOf(D.bees.log.asOf) + '</p>';
+    },
+    "bee-tree": function(){
+      var svg = BEE.tree();
+      return svg ? '<h3 class="sub">Colony family tree</h3><p class="sub-note">Which colony came from which split, with the date of the split. Dashed means the hive is empty now.</p><div class="hv-tree">' + svg + '</div>' : "";
     },
     "bee-videos": function(){
       var out = "";
@@ -1263,6 +2263,41 @@
     },
     "house-source": function(){
       return "Sea temperature and forecast from " + esc(D.house.weatherSource || "public weather sites") + ". " + asOf(D.house.weatherAsOf);
+    },
+    "house-availability": function(){
+      var A = D.house.availability;
+      if(!A || !A.blocked){ return ""; }
+      var DAYMS = 86400000, today = new Date(); today.setHours(0, 0, 0, 0);
+      var ranges = A.blocked.map(function(r){ return [new Date(r[0] + "T00:00:00"), new Date(r[1] + "T00:00:00")]; });
+      function taken(d){ return ranges.some(function(r){ return d >= r[0] && d < r[1]; }); }
+      var end = new Date(today.getFullYear(), today.getMonth() + 6, today.getDate());
+      var free = 0, next = null;
+      for(var d = new Date(today); d < end; d = new Date(d.getTime() + DAYMS)){
+        if(!taken(d)){ free++; if(!next){ next = new Date(d); } }
+      }
+      var months = "";
+      for(var m = 0; m < 6; m++){
+        var first = new Date(today.getFullYear(), today.getMonth() + m, 1);
+        var nDays = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+        var cells = "", fm = 0, lead = (first.getDay() + 6) % 7;
+        ["M", "T", "W", "T", "F", "S", "S"].forEach(function(w){ cells += "<b>" + w + "</b>"; });
+        for(var k = 0; k < lead; k++){ cells += "<span></span>"; }
+        for(var day = 1; day <= nDays; day++){
+          var dd = new Date(first.getFullYear(), first.getMonth(), day);
+          var cls = dd < today || dd >= end ? "past" : (taken(dd) ? "taken" : "free");
+          if(cls === "free"){ fm++; }
+          cells += '<i class="' + cls + '">' + day + '</i>';
+        }
+        months += '<div class="avail-month"><h4>' + first.toLocaleDateString("en-GB", {month: "long", year: "numeric"}) +
+                  '<span>' + fm + ' free</span></h4><div class="avail-days">' + cells + '</div></div>';
+      }
+      return '<h3 class="sub">Availability</h3><p class="sub-note">Free and booked nights for the next six months, from the Airbnb and Vrbo calendars.</p>' +
+        '<div class="metrics tiles">' +
+        metric("Next free night", next ? fdate(next) + (next.getFullYear() !== today.getFullYear() ? " " + next.getFullYear() : "") : "None", "", "", next ? "" : "in the next six months") +
+        metric("Free nights", fmt(free), "", "", "next six months") + '</div>' +
+        '<div class="avail">' + months + '</div>' +
+        '<div class="avail-key"><span><i style="background:var(--accent-soft);border:1px solid var(--accent)"></i>Free</span><span><i style="background:var(--bg);border:1px solid var(--line)"></i>Booked or closed</span></div>' +
+        '<p class="source-note">' + asOf(A.asOf) + ' Book through the links below.</p>';
     }
   };
 
