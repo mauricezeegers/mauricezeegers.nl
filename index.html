@@ -1577,8 +1577,8 @@
           <span class="icon"><svg><use href="#icon-house"/></svg></span>
           <span class="titles"><h3>Vacation house</h3><span class="period">Mani, Peloponnese</span></span>
         </div>
-        <div class="metrics" data-render="house-metrics"></div>
-        <span class="more">Weather and Mani House with Sea View</span>
+        <div class="metrics" data-render="house-metrics" data-size="home"></div>
+        <span class="more">Availability, weather and Mani House with Sea View</span>
       </a>
 
       <a class="dash-card" href="#beekeeping" data-tab="beekeeping">
@@ -2065,6 +2065,21 @@
     return {season: season, apiaries: apiaries, card: card, stack: stack, tree: tree, short: short, qc: qc};
   })();
 
+  /* ---------- vacation house: free nights in the next six months (Airbnb and Vrbo blocks) ---------- */
+  function availability(){
+    var A = D.house.availability;
+    if(!A || !A.blocked){ return null; }
+    var DAYMS = 86400000, today = new Date(); today.setHours(0, 0, 0, 0);
+    var ranges = A.blocked.map(function(r){ return [new Date(r[0] + "T00:00:00"), new Date(r[1] + "T00:00:00")]; });
+    function taken(d){ return ranges.some(function(r){ return d >= r[0] && d < r[1]; }); }
+    var end = new Date(today.getFullYear(), today.getMonth() + 6, today.getDate());
+    var free = 0, next = null;
+    for(var d = new Date(today); d < end; d = new Date(d.getTime() + DAYMS)){
+      if(!taken(d)){ free++; if(!next){ next = new Date(d); } }
+    }
+    return {A: A, today: today, end: end, taken: taken, free: free, next: next};
+  }
+
   /* ---------- renderers ---------- */
   var S = D.sport, km = S.km || [], hm = S.hm || [];
   var R = {
@@ -2255,8 +2270,15 @@
       return out;
     },
 
-    "house-metrics": function(){
-      var H = D.house, out = "";
+    "house-metrics": function(size){
+      var H = D.house, out = "", V = size === "home" ? availability() : null;
+      if(V){
+        var st = V.free >= 30 ? {t: "Available", n: 3, c: "ok"} : (V.free > 0 ? {t: "Few nights free", n: 2, c: "few"} : {t: "Fully booked", n: 0, c: "out"});
+        var dots = "";
+        for(var i = 0; i < 3; i++){ dots += '<i class="' + (i < st.n ? "f" : "") + '"></i>'; }
+        out += '<div class="metric"><span class="m-label">Availability</span><div class="state"><span class="pill ' + st.c + '"><span class="steps" aria-hidden="true">' + dots + '</span><span class="txt">' + st.t + '</span></span>' +
+               '<span class="sub-line">' + (V.next ? "Next available " + fdate(V.next) + (V.next.getFullYear() !== V.today.getFullYear() ? " " + V.next.getFullYear() : "") : "No free nights in the next six months") + '</span></div></div>';
+      }
       if(H.airMaxC != null){ out += metric("Forecast", fmt(H.airMaxC) + "<small>°C</small>", "", "", esc(H.sky || "") + (H.sky ? ", tomorrow" : "tomorrow")); }
       if(H.seaTempC != null){ out += metric("Sea", fmt(H.seaTempC, 1) + "<small>°C</small>", "", ""); }
       return out;
@@ -2265,16 +2287,9 @@
       return "Sea temperature and forecast from " + esc(D.house.weatherSource || "public weather sites") + ". " + asOf(D.house.weatherAsOf);
     },
     "house-availability": function(){
-      var A = D.house.availability;
-      if(!A || !A.blocked){ return ""; }
-      var DAYMS = 86400000, today = new Date(); today.setHours(0, 0, 0, 0);
-      var ranges = A.blocked.map(function(r){ return [new Date(r[0] + "T00:00:00"), new Date(r[1] + "T00:00:00")]; });
-      function taken(d){ return ranges.some(function(r){ return d >= r[0] && d < r[1]; }); }
-      var end = new Date(today.getFullYear(), today.getMonth() + 6, today.getDate());
-      var free = 0, next = null;
-      for(var d = new Date(today); d < end; d = new Date(d.getTime() + DAYMS)){
-        if(!taken(d)){ free++; if(!next){ next = new Date(d); } }
-      }
+      var V = availability();
+      if(!V){ return ""; }
+      var A = V.A, today = V.today, end = V.end, taken = V.taken, free = V.free, next = V.next;
       var months = "";
       for(var m = 0; m < 6; m++){
         var first = new Date(today.getFullYear(), today.getMonth() + m, 1);
@@ -2297,7 +2312,7 @@
         metric("Free nights", fmt(free), "", "", "next six months") + '</div>' +
         '<div class="avail">' + months + '</div>' +
         '<div class="avail-key"><span><i style="background:var(--accent-soft);border:1px solid var(--accent)"></i>Free</span><span><i style="background:var(--bg);border:1px solid var(--line)"></i>Booked or closed</span></div>' +
-        '<p class="source-note">' + asOf(A.asOf) + ' Book through the links below.</p>';
+        '<p class="source-note">' + asOf(A.asOf) + '</p>';
     }
   };
 
