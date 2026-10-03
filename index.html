@@ -1617,7 +1617,7 @@
   .hv-empty{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:10px;color:var(--ink-soft);font-size:.8rem;}
   .hv-empty div{display:grid;justify-items:center;gap:2px;width:60px;text-align:center;}
   .hv-empty svg{width:100%;height:auto;}
-  .hv-empty .hv-empty-kg{color:var(--hv-harv);font-weight:600;font-variant-numeric:tabular-nums;}
+  .hv-empty .hv-empty-kg{color:var(--ink-soft);font-size:.7rem;white-space:nowrap;font-variant-numeric:tabular-nums;}
   .colony-dots{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
   .colony-dots i{width:12px;height:12px;border-radius:50%;display:inline-block;border:1px solid #0008;}
   .colony-dots i.unmarked{background:transparent;border:1.5px dashed var(--ink-soft);}
@@ -2065,7 +2065,7 @@
       function key(h){ return (h.apiary + ":" + h.name.replace(/\s*\(.*\)\s*$/, "")).toLowerCase().replace(/\s+/g, ""); }
       function pos(h){ var i = ORDER.indexOf(key(h)); return i === -1 ? 100 + (/^rechts$/i.test(h.apiary) ? 50 : 0) : i; }
       /* hives Maurice does not want on the site (Fifty nine: deleted and recreated in the app); their honey still counts */
-      var HIDE = ["links:fiftynine"];
+      var HIDE = [];
       B.hives = L.hives.filter(function(h){ return HIDE.indexOf(key(h)) === -1; }).sort(function(a, b){ return pos(a) - pos(b); });
       B.active = B.hives.filter(function(h){ return h.status === "active"; });
       B.honey = total(B.ha);
@@ -2400,7 +2400,7 @@
         out += '<div class="hv-apiary"><h4>' + esc(g.name) + '</h4><span>' + g.rows.length + ' active ' + (g.rows.length === 1 ? "hive" : "hives") + ' · ' + fmt(g.honey, 1) + ' kg honey this season</span></div><div class="hv-rows">';
         g.rows.forEach(function(o){ out += BEE.card(o, B); });
         if(g.empty.length){
-          out += '<div class="hv-empty"><span>Empty:</span>' + g.empty.map(function(e){ return '<div>' + BEE.stack(e.h, true) + '<span>' + esc(BEE.short(e.h.name)) + '</span>' + (e.kg ? '<span class="hv-empty-kg">' + fmt(e.kg, 1) + ' kg honey</span>' : "") + '</div>'; }).join("") + '</div>';
+          out += '<div class="hv-empty"><span>Empty:</span>' + g.empty.map(function(e){ return '<div>' + BEE.stack(e.h, true) + '<span>' + esc(BEE.short(e.h.name)) + '</span>' + '<span class="hv-empty-kg">' + (e.kg ? fmt(e.kg, 1) + ' kg honey' : "&nbsp;") + '</span>' + '</div>'; }).join("") + '</div>';
         }
         out += '</div>';
       });
