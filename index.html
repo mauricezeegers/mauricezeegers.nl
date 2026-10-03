@@ -1467,8 +1467,6 @@
   .hv-empty{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:10px;color:var(--ink-soft);font-size:.8rem;}
   .hv-empty div{display:grid;justify-items:center;gap:2px;width:60px;text-align:center;}
   .hv-empty svg{width:100%;height:auto;}
-  .hv-tree{overflow-x:auto;margin-top:10px;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;}
-  .hv-tree svg{min-width:520px;}
   .colony-dots{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
   .colony-dots i{width:12px;height:12px;border-radius:50%;display:inline-block;border:1px solid #0008;}
   .colony-dots i.unmarked{background:transparent;border:1.5px dashed var(--ink-soft);}
@@ -1732,7 +1730,6 @@
 
       <div class="metrics tiles" data-render="bees-metrics" data-size="tile"></div>
       <div data-render="bee-hives"></div>
-      <div data-render="bee-tree"></div>
 
       <div data-render="bee-social"></div>
 
@@ -2026,34 +2023,7 @@
         '<div class="hv-next"><div class="t">Next steps</div><ul>' + o.steps.map(function(s){ return '<li><span class="dot" style="background:' + NEXT[s[0]] + '"></span><span>' + esc(s[1]) + '</span></li>'; }).join("") + '</ul></div></div></div>';
     }
 
-    function tree(){
-      var L = D.bees && D.bees.log;
-      if(!L || !L.splits || !L.splits.length){ return ""; }
-      var kids = {}, isChild = {}, rows = [], pos = {};
-      L.splits.filter(function(r){ return r[1] && r[2] && r[1] !== r[2]; }).forEach(function(r){ (kids[r[1]] = kids[r[1]] || []).push([r[2], r[0]]); isChild[r[2]] = 1; });
-      var seen = {};
-      function walk(n, depth){ if(seen[n]){ return; } seen[n] = 1; rows.push([n, depth]); (kids[n] || []).forEach(function(c){ walk(c[0], depth + 1); }); }
-      Object.keys(kids).filter(function(k){ return !isChild[k]; }).forEach(function(r){ walk(r, 0); });
-      var W = 600, rowH = 34, H = rows.length * rowH + 6;
-      rows.forEach(function(r, i){ pos[r[0]] = [Math.min(r[1], 2) * 200, i * rowH + 6]; });
-      var s = '<svg class="chart hv-fig" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Colony family tree">';
-      rows.forEach(function(r){
-        var p = pos[r[0]];
-        (kids[r[0]] || []).forEach(function(c){
-          var q = pos[c[0]];
-          s += '<path d="M' + (p[0] + 150) + ' ' + (p[1] + 12) + ' H' + (q[0] - 26) + ' V' + (q[1] + 12) + ' H' + q[0] + '" fill="none" stroke="var(--todo-line)" stroke-width="1.5"/>';
-          s += '<text x="' + (q[0] - 4) + '" y="' + (q[1] + 8) + '" text-anchor="end">' + dm(dt(c[1])) + '</text>';
-        });
-        var h = L.hives.filter(function(x){ return x.name === r[0]; })[0] || {}, empty = h.status !== "active";
-        s += '<rect x="' + p[0] + '" y="' + p[1] + '" width="150" height="24" rx="12" fill="' + (empty ? "var(--bg)" : "var(--surface)") + '" stroke="' + (empty ? "var(--todo-line)" : "var(--accent)") + '"' + (empty ? ' stroke-dasharray="3 2"' : "") + '/>';
-        var c = h.queen && h.queenColor ? qc(h.queenColor) : null;
-        if(c){ s += '<circle cx="' + (p[0] + 14) + '" cy="' + (p[1] + 12) + '" r="5" fill="' + c + '"/>'; }
-        s += '<text x="' + (p[0] + (c ? 26 : 12)) + '" y="' + (p[1] + 16) + '" style="fill:' + (empty ? "var(--ink-soft)" : "var(--ink)") + ';font-size:12px">' + esc(short(r[0])) + ' (' + frames(r[0]) + ')' + (empty ? " empty" : "") + (!empty && !h.queen ? " · queenless" : "") + '</text>';
-      });
-      return s + '</svg>';
-    }
-
-    return {season: season, apiaries: apiaries, card: card, stack: stack, tree: tree, short: short, qc: qc};
+    return {season: season, apiaries: apiaries, card: card, stack: stack, short: short, qc: qc};
   })();
 
   /* ---------- vacation house: free nights in the next six months (Airbnb and Vrbo blocks) ---------- */
@@ -2277,10 +2247,6 @@
         out += '</div>';
       });
       return out + '<p class="source-note">From ' + esc(D.bees.log.source || "HiveCompanion") + '. ' + asOf(D.bees.log.asOf) + '</p>';
-    },
-    "bee-tree": function(){
-      var svg = BEE.tree();
-      return svg ? '<h3 class="sub">Colony family tree</h3><p class="sub-note">Which colony came from which split, with the date of the split. Dashed means the hive is empty now.</p><div class="hv-tree">' + svg + '</div>' : "";
     },
     "bee-videos": function(){
       var out = "";
