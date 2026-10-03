@@ -139,7 +139,7 @@ def main():
             p = "Oxalic acid"
         treat.append([day(r["Date"]), r["Hive"], p])
     feed = keep([[day(r["Date"]), r["Hive"], num(r.get("Syrup")) + num(r.get("Honey")) + num(r.get("Fondant"))] for r in S.get("Feedings", [])])
-    harv = keep([[day(r["Date"]), r["Hive"], num(r.get("Honey quantity"))] for r in S.get("Harvests", [])])
+    harv = keep([[day(r["Date"]), r["Hive"], num(r.get("Honey quantity")), r.get("Apiary", "")] for r in S.get("Harvests", [])])
     splits = [[day(r["Date"]), r["From hive"], r["Destination hive"]] for r in S.get("Splits", []) if r.get("Date")]
     # open tasks, only those tied to a hive: by the Hive column or by a hive name in the title
     # ("59" also means Fifty nine). General tasks stay off the site.

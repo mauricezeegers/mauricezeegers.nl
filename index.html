@@ -112,7 +112,7 @@
             hives = number of active hives in bees.log. bees.log comes from the newest HiveCompanion export
             (scripts/hivecompanion_to_json.py): hives {name, apiary, status, queen, queenColor, bodies, supers},
             inspections [date, hive, population, food, behaviour (5 = aggressive), note], treatments [date, hive, product],
-            feedings [date, hive, litres], harvests [date, hive, kg], splits [date, from, to], tasks [title, hive].
+            feedings [date, hive, litres], harvests [date, hive, kg, apiary], splits [date, from, to], tasks [title, hive].
             Never GPS coordinates, never the Storage apiary. The page computes the season (1 March to end of February).
   social:   instagram / tiktok profile url, and latest = {url, caption} for the newest video. Maintained by hand.
   races:    upcoming races from the running sheet (tab Maurice, Events list), only races with a fixed date (YYYY-MM-DD)
@@ -964,52 +964,62 @@
         [
           "2026-05-31",
           "Fifty nine (10)",
-          5.0
+          5.0,
+          "Links"
         ],
         [
           "2026-07-01",
           "Fifty nine (10)",
-          20.0
+          20.0,
+          "Links"
         ],
         [
           "2026-07-04",
           "Fifty nine (10)",
-          18.0
+          18.0,
+          "Links"
         ],
         [
           "2026-07-04",
           "Aelia (10)",
-          1.0
+          1.0,
+          "Links"
         ],
         [
           "2026-07-04",
           "Big powerhouse (10)",
-          4.0
+          4.0,
+          "Links"
         ],
         [
           "2026-07-04",
           "Little powerhouse (10)",
-          4.0
+          4.0,
+          "Links"
         ],
         [
           "2026-08-19",
           "Taygetos (10)",
-          10.0
+          10.0,
+          "Links"
         ],
         [
           "2026-08-20",
           "Taygetos (10)",
-          10.0
+          10.0,
+          "Links"
         ],
         [
           "2026-08-21",
           "Big powerhouse (10)",
-          10.0
+          10.0,
+          "Links"
         ],
         [
           "2026-08-29",
           "Little powerhouse (10)",
-          10.0
+          10.0,
+          "Links"
         ]
       ],
       "splits": [
@@ -2054,7 +2064,9 @@
                    "links:hochkonigman", "links:montagu", "rechts:faultytowers", "rechts:maastricht"];
       function key(h){ return (h.apiary + ":" + h.name.replace(/\s*\(.*\)\s*$/, "")).toLowerCase().replace(/\s+/g, ""); }
       function pos(h){ var i = ORDER.indexOf(key(h)); return i === -1 ? 100 + (/^rechts$/i.test(h.apiary) ? 50 : 0) : i; }
-      B.hives = L.hives.slice().sort(function(a, b){ return pos(a) - pos(b); });
+      /* hives Maurice does not want on the site (Fifty nine: deleted and recreated in the app); their honey still counts */
+      var HIDE = ["links:fiftynine"];
+      B.hives = L.hives.filter(function(h){ return HIDE.indexOf(key(h)) === -1; }).sort(function(a, b){ return pos(a) - pos(b); });
       B.active = B.hives.filter(function(h){ return h.status === "active"; });
       B.honey = total(B.ha);
       return B;
@@ -2078,7 +2090,8 @@
     }
 
     function apiaries(B){
-      var names = [];
+      var names = [], apiaryOf = {};
+      (D.bees.log.hives || []).forEach(function(h){ apiaryOf[h.name] = h.apiary; });
       B.hives.forEach(function(h){ if(names.indexOf(h.apiary) === -1){ names.push(h.apiary); } });
       return names.map(function(g){
         var rows = B.hives.filter(function(h){ return h.apiary === g && h.status === "active"; }).map(function(h){
@@ -2087,12 +2100,12 @@
           o.steps = nextSteps(h, o, B);
           return o;
         });
-        /* the apiary total counts every hive in it, also hives that are empty now */
+        /* the apiary total counts every harvest from that apiary, also from hives that are empty, hidden or deleted */
         var empty = B.hives.filter(function(h){ return h.apiary === g && h.status !== "active"; }).map(function(h){
           return {h: h, kg: total(of(B.ha, h.name))};
         });
         return {name: g, rows: rows, empty: empty,
-                honey: rows.reduce(function(a, o){ return a + total(o.ha); }, 0) + empty.reduce(function(a, e){ return a + e.kg; }, 0)};
+                honey: total(B.ha.filter(function(r){ return (r[3] || apiaryOf[r[1]]) === g; }))};
       }).filter(function(g){ return g.rows.length || g.empty.length; });
     }
 
