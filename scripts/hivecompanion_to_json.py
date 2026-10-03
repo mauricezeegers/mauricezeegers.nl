@@ -12,7 +12,8 @@ Cleaning rules (agreed with Maurice):
   * exact duplicate rows (same date, hive and amount/product) are double entries and count once;
   * all oxalic acid spellings (Ox vap, Ox var, Ox vapor, Oxalic acid) become "Oxalic acid";
   * the Apiaries sheet (GPS coordinates) and the Storage apiary are never exported;
-  * behaviour score: 1 = calm, 5 = aggressive.
+  * behaviour score: 1 = calm, 5 = aggressive;
+  * rows with a blank hive name (hive deleted or recreated in the app) are kept with hive "".
 """
 import base64, email, io, json, re, sys, zipfile, datetime
 import xml.etree.ElementTree as ET
@@ -124,8 +125,10 @@ def main():
         })
     names = {h["name"] for h in hives}
 
+    # rows of a hive that was deleted in the app come with a blank hive name: keep them
+    # (they still count in season totals; the weekly routine fills the name from the previous data where it can)
     def keep(rows):
-        return [r for r in rows if r[1] in names and r[0]]
+        return [r for r in rows if r[0] and (r[1] in names or r[1] == "")]
 
     insp = keep([[day(r["Date"]), r["Hive"], int(num(r.get("Population (1-5)"))), int(num(r.get("Food stores (1-5)"))),
                   int(num(r.get("Behavior (1-5)"))), (r.get("Notes") or "").strip()] for r in S.get("Inspections", [])])

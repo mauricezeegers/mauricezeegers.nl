@@ -384,6 +384,30 @@
           "1 wax moth frame replaced"
         ],
         [
+          "2026-06-11",
+          "Rotterdam (10)",
+          3,
+          1,
+          2,
+          ""
+        ],
+        [
+          "2026-06-13",
+          "Fifty nine (10)",
+          5,
+          4,
+          3,
+          "Q removed"
+        ],
+        [
+          "2026-06-13",
+          "Honig (10)",
+          5,
+          5,
+          2,
+          "Ready for a split if I find the queen"
+        ],
+        [
           "2026-06-13",
           "Aelia (10)",
           3,
@@ -416,12 +440,28 @@
           "2 bk raampjes wintervoer toegevoegd uiterst rechts"
         ],
         [
+          "2026-06-19",
+          "Honig (10)",
+          4,
+          4,
+          3,
+          ""
+        ],
+        [
           "2026-06-20",
           "Big powerhouse (10)",
           4,
           5,
           2,
           "Only eggs seen, added two empty frames"
+        ],
+        [
+          "2026-06-22",
+          "Rotterdam (10)",
+          3,
+          3,
+          3,
+          ""
         ],
         [
           "2026-06-22",
@@ -473,6 +513,14 @@
         ],
         [
           "2026-07-10",
+          "Rotterdam (10)",
+          2,
+          2,
+          2,
+          ""
+        ],
+        [
+          "2026-07-10",
           "Green Green (10)",
           2,
           3,
@@ -485,6 +533,30 @@
           5,
           3,
           2,
+          ""
+        ],
+        [
+          "2026-07-12",
+          "Fifty nine (10)",
+          5,
+          3,
+          5,
+          ""
+        ],
+        [
+          "2026-08-24",
+          "Honig (10)",
+          1,
+          5,
+          2,
+          "Hive is too weak"
+        ],
+        [
+          "2026-08-28",
+          "Rotterdam (10)",
+          3,
+          2,
+          4,
           ""
         ],
         [
@@ -502,6 +574,14 @@
           3,
           2,
           ""
+        ],
+        [
+          "2026-08-29",
+          "Fifty nine (10)",
+          2,
+          2,
+          4,
+          "Moet ik samen voegen"
         ],
         [
           "2026-10-02",
@@ -589,6 +669,11 @@
         ],
         [
           "2026-07-04",
+          "Aelia (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-07-04",
           "Faulty Towers (8)",
           "Oxalic acid"
         ],
@@ -650,6 +735,11 @@
         [
           "2026-07-11",
           "Taygetos (10)",
+          "Oxalic acid"
+        ],
+        [
+          "2026-08-23",
+          "Aelia (10)",
           "Oxalic acid"
         ],
         [
@@ -690,9 +780,29 @@
           1.0
         ],
         [
+          "2026-06-08",
+          "Maastricht (10)",
+          1.0
+        ],
+        [
           "2026-06-12",
           "Maastricht (10)",
           0.5
+        ],
+        [
+          "2026-06-12",
+          "Maastricht (10)",
+          0.5
+        ],
+        [
+          "2026-06-13",
+          "",
+          1.0
+        ],
+        [
+          "2026-06-19",
+          "Maastricht (10)",
+          1.0
         ],
         [
           "2026-06-19",
@@ -716,6 +826,11 @@
         ],
         [
           "2026-07-04",
+          "Maastricht (10)",
+          1.0
+        ],
+        [
+          "2026-07-04",
           "Faulty Towers (8)",
           2.0
         ],
@@ -728,6 +843,11 @@
           "2026-07-06",
           "Taygetos (10)",
           2.0
+        ],
+        [
+          "2026-08-23",
+          "Aelia (10)",
+          4.0
         ],
         [
           "2026-08-23",
@@ -773,6 +893,11 @@
           "2026-08-23",
           "Taygetos (10)",
           4.0
+        ],
+        [
+          "2026-08-24",
+          "Fifty nine (10)",
+          2.0
         ],
         [
           "2026-08-24",
@@ -836,6 +961,21 @@
         ]
       ],
       "harvests": [
+        [
+          "2026-05-31",
+          "Fifty nine (10)",
+          5.0
+        ],
+        [
+          "2026-07-01",
+          "Fifty nine (10)",
+          20.0
+        ],
+        [
+          "2026-07-04",
+          "Fifty nine (10)",
+          18.0
+        ],
         [
           "2026-07-04",
           "Aelia (10)",
@@ -1467,6 +1607,7 @@
   .hv-empty{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:10px;color:var(--ink-soft);font-size:.8rem;}
   .hv-empty div{display:grid;justify-items:center;gap:2px;width:60px;text-align:center;}
   .hv-empty svg{width:100%;height:auto;}
+  .hv-empty .hv-empty-kg{color:var(--hv-harv);font-weight:600;font-variant-numeric:tabular-nums;}
   .colony-dots{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
   .colony-dots i{width:12px;height:12px;border-radius:50%;display:inline-block;border:1px solid #0008;}
   .colony-dots i.unmarked{background:transparent;border:1.5px dashed var(--ink-soft);}
@@ -1946,8 +2087,12 @@
           o.steps = nextSteps(h, o, B);
           return o;
         });
-        return {name: g, rows: rows, honey: rows.reduce(function(a, o){ return a + total(o.ha); }, 0),
-                empty: B.hives.filter(function(h){ return h.apiary === g && h.status !== "active"; })};
+        /* the apiary total counts every hive in it, also hives that are empty now */
+        var empty = B.hives.filter(function(h){ return h.apiary === g && h.status !== "active"; }).map(function(h){
+          return {h: h, kg: total(of(B.ha, h.name))};
+        });
+        return {name: g, rows: rows, empty: empty,
+                honey: rows.reduce(function(a, o){ return a + total(o.ha); }, 0) + empty.reduce(function(a, e){ return a + e.kg; }, 0)};
       }).filter(function(g){ return g.rows.length || g.empty.length; });
     }
 
@@ -2242,7 +2387,7 @@
         out += '<div class="hv-apiary"><h4>' + esc(g.name) + '</h4><span>' + g.rows.length + ' active ' + (g.rows.length === 1 ? "hive" : "hives") + ' · ' + fmt(g.honey, 1) + ' kg honey this season</span></div><div class="hv-rows">';
         g.rows.forEach(function(o){ out += BEE.card(o, B); });
         if(g.empty.length){
-          out += '<div class="hv-empty"><span>Empty:</span>' + g.empty.map(function(h){ return '<div>' + BEE.stack(h, true) + '<span>' + esc(BEE.short(h.name)) + '</span></div>'; }).join("") + '</div>';
+          out += '<div class="hv-empty"><span>Empty:</span>' + g.empty.map(function(e){ return '<div>' + BEE.stack(e.h, true) + '<span>' + esc(BEE.short(e.h.name)) + '</span>' + (e.kg ? '<span class="hv-empty-kg">' + fmt(e.kg, 1) + ' kg honey</span>' : "") + '</div>'; }).join("") + '</div>';
         }
         out += '</div>';
       });
