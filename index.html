@@ -106,6 +106,8 @@
   profiles: optional profile links {itra, strava, utmb, wikidata}. Only entries with a url are shown; empty ones stay hidden.
   sport:    24 weekly totals, oldest first (first 12 = previous period, last 12 = latest). Totals only, never routes.
             streak = consecutive weeks with at least one run.
+            loadFocus = Garmin Load Focus (get_training_load_balance): {asOf, feedback, bands {anaerobic, aerobic_high,
+            aerobic_low: {load, min, max}}}; min/max = Garmin's optimal range. feedback e.g. ANAEROBIC_SHORTAGE, BALANCED.
   bees:     status is "available", "few" or "soldout"; season is a label. Both maintained by hand.
             hives = number of active hives in bees.log. bees.log comes from the newest HiveCompanion export
             (scripts/hivecompanion_to_json.py): hives {name, apiary, status, queen, queenColor, bodies, supers},
@@ -241,12 +243,33 @@
       "value": 13,
       "unit": "weeks",
       "rule": "in a row with at least one run"
+    },
+    "loadFocus": {
+      "asOf": "2026-10-03",
+      "feedback": "ANAEROBIC_SHORTAGE",
+      "bands": {
+        "anaerobic": {
+          "load": 115,
+          "min": 217,
+          "max": 652
+        },
+        "aerobic_high": {
+          "load": 756,
+          "min": 685,
+          "max": 1338
+        },
+        "aerobic_low": {
+          "load": 1589,
+          "min": 511,
+          "max": 1164
+        }
+      }
     }
   },
   "bees": {
     "status": "few",
     "season": 2026,
-    "hives": 12,
+    "hives": 9,
     "log": {
       "asOf": "2026-10-02",
       "source": "HiveCompanion",
@@ -266,26 +289,17 @@
           "status": "active",
           "queen": true,
           "queenColor": null,
-          "bodies": 1,
-          "supers": 2
-        },
-        {
-          "name": "Fatboy (6)",
-          "apiary": "Links",
-          "status": "empty",
-          "queen": false,
-          "queenColor": null,
-          "bodies": 1,
-          "supers": 0
+          "bodies": 2,
+          "supers": 1
         },
         {
           "name": "Fifty nine (10)",
           "apiary": "Links",
-          "status": "active",
+          "status": "empty",
           "queen": false,
           "queenColor": null,
           "bodies": 2,
-          "supers": 1
+          "supers": 0
         },
         {
           "name": "Green Green (10)",
@@ -303,16 +317,16 @@
           "queen": true,
           "queenColor": "white",
           "bodies": 1,
-          "supers": 0
+          "supers": 1
         },
         {
           "name": "Honig (10)",
           "apiary": "Links",
-          "status": "active",
+          "status": "empty",
           "queen": false,
           "queenColor": null,
-          "bodies": 1,
-          "supers": 2
+          "bodies": 2,
+          "supers": 0
         },
         {
           "name": "Little powerhouse (10)",
@@ -324,31 +338,13 @@
           "supers": 1
         },
         {
-          "name": "Mini Plus (6)",
-          "apiary": "Links",
-          "status": "empty",
-          "queen": false,
-          "queenColor": null,
-          "bodies": 1,
-          "supers": 0
-        },
-        {
           "name": "Montagu (10)",
           "apiary": "Links",
           "status": "active",
           "queen": true,
           "queenColor": "yellow",
           "bodies": 1,
-          "supers": 0
-        },
-        {
-          "name": "Six Seven (6)",
-          "apiary": "Links",
-          "status": "empty",
-          "queen": false,
-          "queenColor": null,
-          "bodies": 1,
-          "supers": 0
+          "supers": 1
         },
         {
           "name": "Taygetos (10)",
@@ -356,7 +352,7 @@
           "status": "active",
           "queen": true,
           "queenColor": "white",
-          "bodies": 1,
+          "bodies": 2,
           "supers": 0
         },
         {
@@ -365,16 +361,7 @@
           "status": "active",
           "queen": true,
           "queenColor": "white",
-          "bodies": 1,
-          "supers": 1
-        },
-        {
-          "name": "Fiveways (8)",
-          "apiary": "Rechts",
-          "status": "empty",
-          "queen": false,
-          "queenColor": null,
-          "bodies": 1,
+          "bodies": 2,
           "supers": 0
         },
         {
@@ -383,15 +370,6 @@
           "status": "active",
           "queen": true,
           "queenColor": "blue",
-          "bodies": 1,
-          "supers": 1
-        },
-        {
-          "name": "Rotterdam (10)",
-          "apiary": "Rechts",
-          "status": "active",
-          "queen": true,
-          "queenColor": "white",
           "bodies": 1,
           "supers": 1
         }
@@ -406,14 +384,6 @@
           "1 wax moth frame replaced"
         ],
         [
-          "2026-06-11",
-          "Rotterdam (10)",
-          3,
-          1,
-          2,
-          ""
-        ],
-        [
           "2026-06-13",
           "Aelia (10)",
           3,
@@ -423,27 +393,11 @@
         ],
         [
           "2026-06-13",
-          "Fifty nine (10)",
-          5,
-          4,
-          3,
-          "Q removed"
-        ],
-        [
-          "2026-06-13",
           "Green Green (10)",
           3,
           3,
           2,
           ""
-        ],
-        [
-          "2026-06-13",
-          "Honig (10)",
-          5,
-          5,
-          2,
-          "Ready for a split if I find the queen"
         ],
         [
           "2026-06-13",
@@ -460,14 +414,6 @@
           1,
           2,
           "2 bk raampjes wintervoer toegevoegd uiterst rechts"
-        ],
-        [
-          "2026-06-19",
-          "Honig (10)",
-          4,
-          4,
-          3,
-          ""
         ],
         [
           "2026-06-20",
@@ -510,14 +456,6 @@
           ""
         ],
         [
-          "2026-06-22",
-          "Rotterdam (10)",
-          3,
-          3,
-          3,
-          ""
-        ],
-        [
           "2026-06-24",
           "Faulty Towers (8)",
           2,
@@ -550,30 +488,6 @@
           ""
         ],
         [
-          "2026-07-10",
-          "Rotterdam (10)",
-          2,
-          2,
-          2,
-          ""
-        ],
-        [
-          "2026-07-12",
-          "Fifty nine (10)",
-          5,
-          3,
-          5,
-          ""
-        ],
-        [
-          "2026-08-24",
-          "Honig (10)",
-          1,
-          5,
-          2,
-          "Hive is too weak"
-        ],
-        [
           "2026-08-28",
           "Faulty Towers (8)",
           4,
@@ -590,20 +504,76 @@
           ""
         ],
         [
-          "2026-08-28",
-          "Rotterdam (10)",
+          "2026-10-02",
+          "Aelia (10)",
           3,
-          2,
+          3,
+          3,
+          ""
+        ],
+        [
+          "2026-10-02",
+          "Big powerhouse (10)",
+          5,
+          5,
+          3,
+          ""
+        ],
+        [
+          "2026-10-02",
+          "Faulty Towers (8)",
+          4,
+          3,
+          3,
+          ""
+        ],
+        [
+          "2026-10-02",
+          "Green Green (10)",
+          3,
+          3,
+          3,
+          ""
+        ],
+        [
+          "2026-10-02",
+          "Hochkonig Man (10)",
+          3,
+          3,
+          3,
+          ""
+        ],
+        [
+          "2026-10-02",
+          "Little powerhouse (10)",
+          4,
+          4,
           4,
           ""
         ],
         [
-          "2026-08-29",
-          "Fifty nine (10)",
-          2,
-          2,
-          4,
-          "Moet ik samen voegen"
+          "2026-10-02",
+          "Maastricht (10)",
+          5,
+          3,
+          3,
+          ""
+        ],
+        [
+          "2026-10-02",
+          "Montagu (10)",
+          3,
+          3,
+          3,
+          ""
+        ],
+        [
+          "2026-10-02",
+          "Taygetos (10)",
+          3,
+          3,
+          3,
+          ""
         ]
       ],
       "treatments": [
@@ -624,22 +594,12 @@
         ],
         [
           "2026-07-04",
-          "Fifty nine (10)",
-          "Oxalic acid"
-        ],
-        [
-          "2026-07-04",
           "Green Green (10)",
           "Oxalic acid"
         ],
         [
           "2026-07-04",
           "Hochkonig Man (10)",
-          "Oxalic acid"
-        ],
-        [
-          "2026-07-04",
-          "Honig (10)",
           "Oxalic acid"
         ],
         [
@@ -655,11 +615,6 @@
         [
           "2026-07-04",
           "Montagu (10)",
-          "Oxalic acid"
-        ],
-        [
-          "2026-07-04",
-          "Rotterdam (10)",
           "Oxalic acid"
         ],
         [
@@ -720,11 +675,6 @@
         [
           "2026-08-23",
           "Montagu (10)",
-          "Oxalic acid"
-        ],
-        [
-          "2026-08-23",
-          "Rotterdam (10)",
           "Oxalic acid"
         ],
         [
@@ -740,18 +690,8 @@
           1.0
         ],
         [
-          "2026-06-08",
-          "Rotterdam (10)",
-          1.0
-        ],
-        [
           "2026-06-12",
           "Maastricht (10)",
-          0.5
-        ],
-        [
-          "2026-06-12",
-          "Rotterdam (10)",
           0.5
         ],
         [
@@ -762,11 +702,6 @@
         [
           "2026-06-19",
           "Maastricht (10)",
-          1.0
-        ],
-        [
-          "2026-06-19",
-          "Rotterdam (10)",
           1.0
         ],
         [
@@ -787,11 +722,6 @@
         [
           "2026-07-04",
           "Maastricht (10)",
-          1.0
-        ],
-        [
-          "2026-07-04",
-          "Rotterdam (10)",
           1.0
         ],
         [
@@ -806,22 +736,12 @@
         ],
         [
           "2026-08-23",
-          "Fifty nine (10)",
-          4.0
-        ],
-        [
-          "2026-08-23",
           "Green Green (10)",
           4.0
         ],
         [
           "2026-08-23",
           "Hochkonig Man (10)",
-          4.0
-        ],
-        [
-          "2026-08-23",
-          "Honig (10)",
           4.0
         ],
         [
@@ -842,11 +762,6 @@
         [
           "2026-08-23",
           "Montagu (10)",
-          4.0
-        ],
-        [
-          "2026-08-23",
-          "Rotterdam (10)",
           4.0
         ],
         [
@@ -866,11 +781,6 @@
         ],
         [
           "2026-08-24",
-          "Fifty nine (10)",
-          2.0
-        ],
-        [
-          "2026-08-24",
           "Hochkonig Man (10)",
           2.0
         ],
@@ -878,19 +788,54 @@
           "2026-08-24",
           "Montagu (10)",
           2.0
+        ],
+        [
+          "2026-10-02",
+          "Aelia (10)",
+          2.0
+        ],
+        [
+          "2026-10-02",
+          "Big powerhouse (10)",
+          2.0
+        ],
+        [
+          "2026-10-02",
+          "Faulty Towers (8)",
+          2.0
+        ],
+        [
+          "2026-10-02",
+          "Green Green (10)",
+          2.0
+        ],
+        [
+          "2026-10-02",
+          "Hochkonig Man (10)",
+          2.0
+        ],
+        [
+          "2026-10-02",
+          "Little powerhouse (10)",
+          2.0
+        ],
+        [
+          "2026-10-02",
+          "Maastricht (10)",
+          2.0
+        ],
+        [
+          "2026-10-02",
+          "Montagu (10)",
+          2.0
+        ],
+        [
+          "2026-10-02",
+          "Taygetos (10)",
+          2.0
         ]
       ],
       "harvests": [
-        [
-          "2026-05-31",
-          "Fifty nine (10)",
-          5.0
-        ],
-        [
-          "2026-07-01",
-          "Fifty nine (10)",
-          20.0
-        ],
         [
           "2026-07-04",
           "Aelia (10)",
@@ -903,13 +848,28 @@
         ],
         [
           "2026-07-04",
-          "Fifty nine (10)",
-          18.0
-        ],
-        [
-          "2026-07-04",
           "Little powerhouse (10)",
           4.0
+        ],
+        [
+          "2026-08-19",
+          "Taygetos (10)",
+          10.0
+        ],
+        [
+          "2026-08-20",
+          "Taygetos (10)",
+          10.0
+        ],
+        [
+          "2026-08-21",
+          "Big powerhouse (10)",
+          10.0
+        ],
+        [
+          "2026-08-29",
+          "Little powerhouse (10)",
+          10.0
         ]
       ],
       "splits": [
@@ -939,16 +899,7 @@
           "Hochkonig Man (10)"
         ]
       ],
-      "tasks": [
-        [
-          "Honig en 59 moeten samengevoegd worden",
-          "Fifty nine (10)"
-        ],
-        [
-          "Honig en 59 moeten samengevoegd worden",
-          "Honig (10)"
-        ]
-      ]
+      "tasks": []
     }
   },
   "social": {
@@ -1289,6 +1240,22 @@
   .pill.out{color:var(--st-out);}
   .pill .txt{color:var(--ink);}
   .state .sub-line{font-size:.85rem;color:var(--ink-soft);}
+
+  /* ---- load focus (trail running) ---- */
+  :root{--lf-ana:#B98CF0; --lf-high:#F09A45; --lf-low:#4CB8D6;}
+  .lf-pill .dot{width:9px;height:9px;border-radius:50%;background:currentColor;display:inline-block;}
+  .lf{display:flex;flex-direction:column;gap:16px;margin-top:16px;padding:18px;border:1px solid var(--line);border-radius:12px;background:var(--surface);}
+  .lf-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;}
+  .lf-tip{font-size:.9rem;color:var(--ink-soft);}
+  .lf-row{display:grid;grid-template-columns:minmax(0, 1fr) auto;gap:6px 12px;align-items:baseline;}
+  .lf-name{font-weight:600;font-size:.95rem;}
+  .lf-val{font-size:.85rem;color:var(--ink-soft);font-variant-numeric:tabular-nums;text-align:right;}
+  .lf-val b{color:var(--ink);font-weight:600;}
+  .lf-track{grid-column:1 / -1;position:relative;height:14px;border-radius:7px;background:var(--bg);border:1px solid var(--line);overflow:hidden;}
+  .lf-range{position:absolute;top:0;bottom:0;background:repeating-linear-gradient(135deg, #ffffff1f 0 4px, transparent 4px 8px);border-left:1px dashed var(--ink-soft);border-right:1px dashed var(--ink-soft);}
+  .lf-bar{position:absolute;left:0;top:3px;bottom:3px;border-radius:4px;}
+  .lf-legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.78rem;color:var(--ink-soft);}
+  .lf-legend i{display:inline-block;width:14px;height:9px;margin-right:6px;vertical-align:middle;border:1px dashed var(--ink-soft);background:repeating-linear-gradient(135deg, #ffffff30 0 3px, transparent 3px 6px);}
 
   /* ---- images and placeholders ---- */
   .ph, .fig-img{
@@ -1736,6 +1703,8 @@
       </div>
       <p class="source-note" data-render="running-source"></p>
 
+      <div data-render="running-load"></div>
+
       <div data-render="running-races"></div>
 
       <h3 class="sub">My bookmarks</h3>
@@ -1818,6 +1787,10 @@
         <a class="link-card" href="https://docs.google.com/spreadsheets/d/1EW5tpy8kBE32IPw6zZEk0zl07oOJ0OxHy8Ddk6tQn7U/edit?gid=1784297928#gid=1784297928" target="_blank" rel="noopener">
           <span class="avatar">GU</span>
           <span class="text"><span class="name">Guests</span><span class="desc">Guest sheet</span></span>
+        </a>
+        <a class="link-card" href="https://www.aade.gr/en/short-term-rental" target="_blank" rel="noopener">
+          <span class="avatar">AA</span>
+          <span class="text"><span class="name">AADE</span><span class="desc">Greek tourist tax</span></span>
         </a>
       </div>
     </div>
@@ -1938,7 +1911,13 @@
       var B = {s0: s0, s1: s1, label: y + "/" + String(y + 1).slice(2),
                ins: inS(L.inspections), tr: inS(L.treatments), fe: inS(L.feedings), ha: inS(L.harvests),
                tasks: L.tasks || [], splits: L.splits || [], hives: L.hives};
-      B.active = L.hives.filter(function(h){ return h.status === "active"; });
+      /* fixed order chosen by Maurice: apiary Links first, then Rechts; hives not in the list go last */
+      var ORDER = ["links:bigpowerhouse", "links:littlepowerhouse", "links:taygetos", "links:aelia", "links:greengreen",
+                   "links:hochkonigman", "links:montagu", "rechts:faultytowers", "rechts:maastricht"];
+      function key(h){ return (h.apiary + ":" + h.name.replace(/\s*\(.*\)\s*$/, "")).toLowerCase().replace(/\s+/g, ""); }
+      function pos(h){ var i = ORDER.indexOf(key(h)); return i === -1 ? 100 + (/^rechts$/i.test(h.apiary) ? 50 : 0) : i; }
+      B.hives = L.hives.slice().sort(function(a, b){ return pos(a) - pos(b); });
+      B.active = B.hives.filter(function(h){ return h.status === "active"; });
       B.honey = total(B.ha);
       return B;
     }
@@ -1968,9 +1947,8 @@
           var o = {h: h, ins: of(B.ins, h.name), tr: of(B.tr, h.name), fe: of(B.fe, h.name), ha: of(B.ha, h.name)};
           o.li = last(o.ins);
           o.steps = nextSteps(h, o, B);
-          o.rank = (!h.queen ? 0 : !o.li ? 1 : o.steps.some(function(s){ return s[0] === "warn"; }) ? 2 : 3) * 1000 - (ago(o.li) || 999);
           return o;
-        }).sort(function(a, b){ return a.rank - b.rank; });
+        });
         return {name: g, rows: rows, honey: rows.reduce(function(a, o){ return a + total(o.ha); }, 0),
                 empty: B.hives.filter(function(h){ return h.apiary === g && h.status !== "active"; })};
       }).filter(function(g){ return g.rows.length || g.empty.length; });
@@ -2052,8 +2030,9 @@
       var L = D.bees && D.bees.log;
       if(!L || !L.splits || !L.splits.length){ return ""; }
       var kids = {}, isChild = {}, rows = [], pos = {};
-      L.splits.forEach(function(r){ (kids[r[1]] = kids[r[1]] || []).push([r[2], r[0]]); isChild[r[2]] = 1; });
-      function walk(n, depth){ rows.push([n, depth]); (kids[n] || []).forEach(function(c){ walk(c[0], depth + 1); }); }
+      L.splits.filter(function(r){ return r[1] && r[2] && r[1] !== r[2]; }).forEach(function(r){ (kids[r[1]] = kids[r[1]] || []).push([r[2], r[0]]); isChild[r[2]] = 1; });
+      var seen = {};
+      function walk(n, depth){ if(seen[n]){ return; } seen[n] = 1; rows.push([n, depth]); (kids[n] || []).forEach(function(c){ walk(c[0], depth + 1); }); }
       Object.keys(kids).filter(function(k){ return !isChild[k]; }).forEach(function(r){ walk(r, 0); });
       var W = 600, rowH = 34, H = rows.length * rowH + 6;
       rows.forEach(function(r, i){ pos[r[0]] = [Math.min(r[1], 2) * 200, i * rowH + 6]; });
@@ -2090,6 +2069,33 @@
       if(!taken(d)){ free++; if(!next){ next = new Date(d); } }
     }
     return {A: A, today: today, end: end, taken: taken, free: free, next: next};
+  }
+
+  /* Garmin Load Focus: three intensity bands against their optimal range, plus the feedback as a coloured pill */
+  function loadFocus(){
+    var L = D.sport && D.sport.loadFocus;
+    if(!L || !L.bands){ return null; }
+    var META = {
+      anaerobic:    {name: "Anaerobic",    color: "var(--lf-ana)",  tip: "Add short, hard efforts: intervals or hill sprints."},
+      aerobic_high: {name: "High aerobic", color: "var(--lf-high)", tip: "Add tempo or threshold runs."},
+      aerobic_low:  {name: "Low aerobic",  color: "var(--lf-low)",  tip: "Add easy, longer runs at a low heart rate."}
+    };
+    var rows = ["anaerobic", "aerobic_high", "aerobic_low"].filter(function(k){ return L.bands[k]; }).map(function(k){
+      var b = L.bands[k];
+      return {key: k, name: META[k].name, color: META[k].color, load: b.load, min: b.min, max: b.max,
+              status: b.load < b.min ? "below optimal" : b.load > b.max ? "above optimal" : "optimal"};
+    });
+    var f = String(L.feedback || "").toLowerCase(), m = f.match(/^(anaerobic|aerobic_high|aerobic_low)_(shortage|focus)$/);
+    var pill = "", tip = "";
+    if(m){
+      var M = META[m[1]];
+      pill = '<span class="pill lf-pill" style="color:' + M.color + '"><span class="dot"></span><span class="txt">' +
+             (m[2] === "shortage" ? "Focus on " + M.name.toLowerCase() : "Mostly " + M.name.toLowerCase()) + '</span></span>';
+      tip = m[2] === "shortage" ? M.tip : "";
+    } else if(f === "balanced"){
+      pill = '<span class="pill lf-pill ok"><span class="dot"></span><span class="txt">Balanced</span></span>';
+    }
+    return {rows: rows, pill: pill, tip: tip, asOf: L.asOf};
   }
 
   /* ---------- renderers ---------- */
@@ -2186,12 +2192,31 @@
       }).join("") + '</div>';
     },
 
+    "running-load": function(){
+      var F = loadFocus();
+      if(!F){ return ""; }
+      var max = Math.max.apply(null, F.rows.map(function(r){ return Math.max(r.load, r.max); })) * 1.08;
+      var pct = function(v){ return (100 * v / max).toFixed(1) + "%"; };
+      var rows = F.rows.map(function(r){
+        return '<div class="lf-row"><span class="lf-name">' + r.name + '</span>' +
+               '<span class="lf-val"><b>' + fmt(r.load) + '</b> · optimal ' + fmt(r.min) + ' to ' + fmt(r.max) + ' · ' + r.status + '</span>' +
+               '<div class="lf-track" role="img" aria-label="' + r.name + ' load ' + fmt(r.load) + ', optimal range ' + fmt(r.min) + ' to ' + fmt(r.max) + '">' +
+               '<span class="lf-range" style="left:' + pct(r.min) + ';width:' + pct(r.max - r.min) + '"></span>' +
+               '<span class="lf-bar" style="width:' + pct(r.load) + ';background:' + r.color + '"></span></div></div>';
+      }).join("");
+      return '<h3 class="sub">Training load focus</h3>' +
+             '<p class="sub-note">Garmin\'s training load over the last four weeks, split into three intensities. The hatched band is the optimal range for each.</p>' +
+             '<div class="lf"><div class="lf-head">' + F.pill + (F.tip ? '<span class="lf-tip">' + F.tip + '</span>' : "") + '</div>' + rows +
+             '<div class="lf-legend"><span><i></i>Optimal range</span><span>' + asOf(F.asOf) + '</span></div></div>';
+    },
     "running-metrics": function(size){
       var kmCur = sum(km.slice(12)), kmPrev = sum(km.slice(0, 12));
       var hmCur = sum(hm.slice(12)), hmPrev = sum(hm.slice(0, 12));
       var lbl = "compared with the previous 12 weeks";
       var out = metric("Distance", fmt(kmCur) + "<small>km</small>", pctDelta(kmCur, kmPrev, lbl), "vs previous 12 weeks") +
                 metric("Elevation gain", fmt(hmCur) + "<small>m</small>", pctDelta(hmCur, hmPrev, lbl), "vs previous 12 weeks");
+      var F = size === "tile" ? null : loadFocus();
+      if(F && F.pill){ out += '<div class="metric"><span class="m-label">Training focus</span><div class="state">' + F.pill + '</div></div>'; }
       if(S.streak && S.streak.value != null){
         out += metric("Streak", fmt(S.streak.value) + "<small>" + esc(S.streak.unit || "weeks") + "</small>", "", "", esc(S.streak.rule || ""));
       }
