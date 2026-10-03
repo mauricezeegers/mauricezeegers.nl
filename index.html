@@ -5821,7 +5821,12 @@
 
   /* ---- collaborations map (research) ---- */
   .collab-map{position:relative;margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;aspect-ratio:1000/520;}
-  .collab-map svg{display:block;width:100%;height:100%;cursor:grab;touch-action:none;}
+  .collab-map svg{display:block;width:100%;height:100%;cursor:grab;}
+  .collab-map.zoomed svg{touch-action:none;}
+  .collab-zoom{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:6px;z-index:1;}
+  .collab-zoom button{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:600 1.1rem/1 "Source Sans 3", sans-serif;cursor:pointer;}
+  .collab-zoom button:hover{border-color:var(--accent);}
+  .collab-zoom button:disabled{opacity:.4;cursor:default;}
   .collab-map .country{fill:#232323;stroke:#333;stroke-width:.4;}
   .collab-map .dot{fill:var(--accent);fill-opacity:.7;stroke:var(--bg);stroke-width:.5;}
   .collab-map .dot:hover{fill-opacity:1;}
@@ -6730,7 +6735,7 @@
       return '<h3 class="sub">Collaborations</h3>' +
              '<p class="sub-note">Institutions of my co-authors on ' + fmt(C.works) + ' publications (' + esc(C.yearMin) + ' to ' + esc(C.yearMax) + '): ' + fmt(C.institutions.length) + ' institutions.</p>' +
              '<div class="collab-map" id="collab-map"><div class="loading">Loading map…</div><div class="collab-tip" id="collab-tip"></div></div>' +
-             '<p class="source-note">Source: OpenAlex (ORCID ' + esc(C.orcid) + '). Drag to pan, scroll to zoom.</p>';
+             '<p class="source-note">Source: OpenAlex (ORCID ' + esc(C.orcid) + '). Use + and − to zoom, drag to pan.</p>';
     },
     "publications-list": function(){
       var list = (D.research.publications || []).slice(0, 5);
@@ -6957,11 +6962,27 @@
     var um = proj([5.69, 50.85]);
     g.append("circle").attr("class", "home").attr("cx", um[0]).attr("cy", um[1]).attr("r", 3.5)
       .on("mousemove", function(e){ show(e, "<b>Maastricht</b>Home base"); }).on("mouseleave", hide);
-    svg.call(d3.zoom().scaleExtent([1, 12]).translateExtent([[0, 0], [W, H]]).on("zoom", function(e){
+    /* zoom only with the + and − buttons, so scrolling the page over the map keeps scrolling the page;
+       dragging pans with a mouse, and on touch screens only once zoomed in */
+    var zoom = d3.zoom().scaleExtent([1, 12]).translateExtent([[0, 0], [W, H]])
+      .filter(function(e){
+        if(e.type === "wheel" || e.type === "dblclick"){ return false; }
+        if(e.type.indexOf("touch") === 0){ return d3.zoomTransform(svg.node()).k > 1; }
+        return !e.button;
+      })
+      .on("zoom", function(e){
+      box.classList.toggle("zoomed", e.transform.k > 1);
+      zin.property("disabled", e.transform.k >= 12); zout.property("disabled", e.transform.k <= 1);
       g.attr("transform", e.transform);
       g.selectAll(".dot").attr("r", R / Math.sqrt(e.transform.k)).attr("stroke-width", .5 / e.transform.k);
       g.selectAll(".home").attr("r", 3.5 / Math.sqrt(e.transform.k)).attr("stroke-width", .8 / e.transform.k);
-    }));
+    });
+    var ctl = d3.select(box).append("div").attr("class", "collab-zoom");
+    var zin = ctl.append("button").attr("type", "button").attr("aria-label", "Zoom in").text("+")
+      .on("click", function(){ svg.transition().duration(300).call(zoom.scaleBy, 2); });
+    var zout = ctl.append("button").attr("type", "button").attr("aria-label", "Zoom out").text("−").property("disabled", true)
+      .on("click", function(){ svg.transition().duration(300).call(zoom.scaleBy, 0.5); });
+    svg.call(zoom);
   }
 
   /* ---------- hash navigation ---------- */
