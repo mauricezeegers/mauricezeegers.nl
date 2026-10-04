@@ -6154,6 +6154,18 @@
         <span class="more">Latest article, publications and books</span>
       </a>
     </div>
+
+    <h3 class="sub">My bookmarks</h3>
+    <div class="link-grid">
+      <a class="link-card" href="https://www.notion.so/doehetnu/Seek-joy-work-hard-and-love-each-other-640eb14d7e5048919b6648c9034e348f" target="_blank" rel="noopener">
+        <span class="avatar">PP</span>
+        <span class="text"><span class="name">PPP</span><span class="desc">People Projects Progress</span></span>
+      </a>
+      <a class="link-card" href="https://drive.google.com/drive/home" target="_blank" rel="noopener">
+        <span class="avatar">DR</span>
+        <span class="text"><span class="name">Drive</span><span class="desc">Files Access</span></span>
+      </a>
+    </div>
   </div>
 
   <!-- ================= RESEARCH ================= -->
@@ -6271,7 +6283,7 @@
         <span class="icon"><svg><use href="#icon-running"/></svg></span>
         <h2>Trail running</h2>
       </div>
-      <p class="intro">Only weekly totals are shown here, never routes or locations.</p>
+      <p class="intro">Weekly totals from Garmin.</p>
 
       <div class="banner" data-render="fig" data-slot="running-hero" data-label="Trail running photo" data-ratio="21/9" data-hide-empty="1"></div>
 
@@ -6286,6 +6298,8 @@
 
       <div data-render="running-races"></div>
 
+      <div data-render="running-profiles"></div>
+
       <h3 class="sub">My bookmarks</h3>
       <div class="link-grid">
         <a class="link-card" href="https://docs.google.com/spreadsheets/d/1fCueYfWX1bvMp5nk_BiBsfQx-N9-wC9-zJU0xWpN4-U/edit?gid=0#gid=0" target="_blank" rel="noopener">
@@ -6293,8 +6307,6 @@
           <span class="text"><span class="name">Running sheet</span><span class="desc">Training and races</span></span>
         </a>
       </div>
-
-      <div data-render="running-profiles"></div>
     </div>
   </div>
 
@@ -6706,7 +6718,7 @@
              metric("Publications last year", fmt(r.papersLastYear || 0), "", "", y ? esc(y - 1) : "");
     },
     "research-source": function(){
-      return "Published papers from " + esc(D.research.source || "the publications register") + ", counted by publication year; the last 12 months use the date a paper was added to the register. " + asOf(D.research.asOf);
+      return "Published papers from " + esc(D.research.source || "the publications register") + ", counted by publication year. " + asOf(D.research.asOf);
     },
     "research-latest-mini": function(){
       var L = D.research.latest;
