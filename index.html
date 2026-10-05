@@ -5606,6 +5606,8 @@
     --accent-ink:#F2F2F0;
     --accent-soft:#18404D;
     --line:#2A2A2A;
+    --life-done:#474745;
+    --life:57%;
     --todo-bg:#1A1A1A;
     --todo-line:#3A3A3A;
     --topo-line: 76 184 214;
@@ -5642,6 +5644,7 @@
     z-index:10;
     background:var(--bg);
     border-bottom:1px solid var(--line);
+    border-image:var(--lifeline) 1;
   }
   .topnav-inner{
     max-width:900px;
@@ -6149,7 +6152,22 @@
     flex-direction:column;
     gap:6px;
     border-top:1px solid var(--line);
+    border-image:var(--lifeline) 1;
     margin-top:8px;
+  }
+  .footer-motto .sep{color:var(--life-done);margin:0 .35em;}
+
+  /* Lifeline: the header and footer separators fill from 11 April 1972 to 11 April 2067.
+     --life (share already lived) is set by lifeline() in the script; 57% is the fallback. */
+  :root{--lifeline:linear-gradient(to right, var(--life-done) 0 var(--life), var(--line) var(--life) 100%);}
+  .life-note{position:relative;height:0;}
+  .life-note span{
+    position:absolute;
+    top:5px;
+    right:max(20px, calc((100% - 900px) / 2 + 20px));
+    font-size:.65rem;
+    color:var(--ink-soft);
+    white-space:nowrap;
   }
 </style>
 
@@ -6179,6 +6197,7 @@
     </div>
   </div>
 </nav>
+<div class="life-note" id="life-note"><span></span></div>
 <div class="notice" id="notice">Some figures are still sample values. They are replaced automatically by the weekly refresh.</div>
 
 <div class="wrap">
@@ -6462,7 +6481,7 @@
   </div>
 
   <footer>
-    <span>Maurice Zeegers</span>
+    <span class="footer-motto">Maurice Zeegers<span class="sep" aria-hidden="true">&#10022;</span>Seek beauty | Do hard things | Be kinder</span>
     <span>A hobby project. Figures should refresh automatically once a week<span id="footnote-trust">, but don't trust them ;)</span><span id="footnote-home">.</span></span>
     <span id="updated"></span>
   </footer>
@@ -7072,6 +7091,15 @@
     svg.call(zoom);
   }
 
+  /* ---------- lifeline (header and footer separators) ---------- */
+  (function lifeline(){
+    var start = Date.UTC(1972, 3, 11), end = Date.UTC(2067, 3, 11), now = Date.now();
+    var share = Math.min(1, Math.max(0, (now - start) / (end - start)));
+    document.documentElement.style.setProperty("--life", (share * 100).toFixed(2) + "%");
+    var weeks = Math.max(0, Math.floor((end - now) / (7 * 864e5)));
+    document.querySelector("#life-note span").textContent = weeks.toLocaleString("en-GB") + " weeks to go (" + ((1 - share) * 100).toFixed(1) + "%)";
+  })();
+
   /* ---------- hash navigation ---------- */
   var tabs = ["home", "research", "running", "beekeeping", "house"];
   var legacy = {elsewhere: "research"};
@@ -7085,6 +7113,7 @@
     if(tab === "research"){ collabMap(); }
     document.getElementById("footnote-trust").hidden = tab === "home";
     document.getElementById("footnote-home").hidden = tab !== "home";
+    document.getElementById("life-note").hidden = tab !== "home";
     document.querySelectorAll(".topnav button[data-tab]").forEach(function(b){
       b.classList.toggle("active", b.getAttribute("data-tab") === tab);
     });
