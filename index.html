@@ -6892,7 +6892,7 @@
                 metric("Elevation gain", fmt(hmCur) + "<small>m</small>", pctDelta(hmCur, hmPrev, lbl), "vs previous 12 weeks");
       var F = size === "tile" ? null : loadFocus();
       if(F && F.pill){ out += '<div class="metric"><span class="m-label">Training focus</span><div class="state">' + F.pill + '</div></div>'; }
-      if(S.streak && S.streak.value != null){
+      if(size === "tile" && S.streak && S.streak.value != null){
         out += metric("Streak", fmt(S.streak.value) + "<small>" + esc(S.streak.unit || "weeks") + "</small>", "", "", esc(S.streak.rule || ""));
       }
       return out;
