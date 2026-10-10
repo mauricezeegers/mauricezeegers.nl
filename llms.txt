@@ -1,0 +1,35 @@
+# Maurice Zeegers
+
+> Maurice Zeegers (Maurice P. Zeegers) is Professor of Complex Genetics and Epidemiology and Head of the Section Meta-Research at Maastricht University, the Netherlands. This site, mauricezeegers.nl, is his personal page with small dashboards on research, trail running, beekeeping and his holiday house in the Mani (Greece). The figures refresh automatically once a week.
+
+## Pages (one page, tabs)
+
+* Home: overview cards of all dashboards
+* Research: recent publications, books, collaborations map (from OpenAlex) and academic profiles
+* Trail running: weekly running totals, training load and upcoming races
+* Beekeeping: Imkerij Hees, hive scores and honey harvests per season
+* Vacation house: Mani House with Sea View in Stoupa, Greece, with weather and availability
+
+## Academic profiles
+
+* Maastricht University: https://www.maastrichtuniversity.nl/mp-zeegers
+* Research information (CRIS): https://cris.maastrichtuniversity.nl/en/persons/maurice-zeegers/
+* ORCID: https://orcid.org/0000-0002-2387-083X
+* Google Scholar: https://scholar.google.com/citations?user=nbv8pHAAAAAJ&hl=en
+* Wikidata: https://www.wikidata.org/wiki/Q53390110
+* GitHub: https://github.com/mauricezeegers
+* LinkedIn: https://www.linkedin.com/in/mauricezeegers/
+
+## Books
+
+* Textbook of Epidemiology (Wiley, 2023)
+* Leerboek epidemiologie (Bohn Stafleu van Loghum)
+* Diet and Fighting Bladder Cancer (Academic Press, 2019)
+* Forensic Epidemiology: Principles and Practice, with Michael Freeman (Academic Press, 2016)
+
+## Projects
+
+* SPIROS 2026, reporting guideline for observational study protocols: https://mauricezeegers.github.io/spiros-guideline/
+* Evidence Synthesis course website, University College Maastricht: https://ucm.meta-research.nl
+* Meta-Research at Maastricht University: https://www.maastrichtuniversity.nl/research/epidemiology/research/meta-research
+* Mani House with Sea View, holiday rental in Stoupa: https://manihousewithseaview.gr
