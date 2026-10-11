@@ -5666,11 +5666,8 @@
   }
   .topnav .brand .mark{
     width:26px;height:26px;
-    border-radius:50%;
-    background:var(--ink);
-    color:var(--bg);
-    display:flex;align-items:center;justify-content:center;
-    font-size:.8rem;font-weight:700;
+    border-radius:6px;
+    display:block;
   }
   .topnav .tabs{display:flex;gap:2px;flex-wrap:wrap;}
   .topnav button{
@@ -6185,7 +6182,7 @@
 
 <nav class="topnav">
   <div class="topnav-inner">
-    <a class="brand" href="#home" data-tab="home"><span class="mark">MZ</span> Maurice Zeegers</a>
+    <a class="brand" href="#home" data-tab="home"><svg class="mark" aria-hidden="true" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#0E0E0E"/><path d="M50.0 14.0C53.6 51.4 55.8 55.2 86.4 77.0C52.2 61.5 47.8 61.5 13.6 77.0C44.2 55.2 46.4 51.4 50.0 14.0Z" fill="#4CB8D6"/></svg> Maurice Zeegers</a>
     <div class="tabs" role="tablist" aria-label="Sections">
       <button type="button" data-tab="home"><svg><use href="#icon-home"/></svg>Home</button>
       <button type="button" data-tab="house"><svg><use href="#icon-house"/></svg>Vacation house</button>
