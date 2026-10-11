@@ -6900,7 +6900,7 @@
           return "<" + tag + ' class="link-card"' + (u ? ' href="' + u + '" target="_blank" rel="noopener"' : "") + '>' +
             '<span class="avatar">' + esc(x.r.km ? x.r.km : "") + '</span>' +
             '<span class="text"><span class="name">' + esc(x.r.name) + '</span>' +
-            '<span class="desc">' + fdate(x.d) + " " + x.d.getFullYear() + (x.r.km ? " · " + esc(x.r.km) + " km" : "") + '</span>' +
+            '<span class="desc">' + x.d.toLocaleDateString("en-GB", {weekday: "long"}) + " " + fdate(x.d) + " " + x.d.getFullYear() + (x.r.km ? " · " + esc(x.r.km) + " km" : "") + '</span>' +
             '<span class="count">' + count + '</span></span></' + tag + '>';
         }).join("");
       return out ? '<h3 class="sub">Upcoming races</h3><p class="sub-note">Races in the next six months.</p><div class="link-grid">' + out + '</div>' : "";
