@@ -6933,14 +6933,14 @@
     "research-latest": function(){
       var L = D.research.latest;
       if(!L || !L.title){ return ""; }
-      var text = L.text || ("New paper in " + L.journal + (L.year ? " (" + L.year + ")" : "") + ".");
+      var text = L.text || "";
       var link = safeUrl(L.url);
       var hasImg = !!safeUrl(D.images["latest-article"]);
       return '<div class="feature"' + (hasImg ? "" : ' style="grid-template-columns:minmax(0, 1fr)"') + '>' + (hasImg ? '<div>' + fig("latest-article", "Figure or journal cover of the latest article", "4/3") + '</div>' : "") +
              '<div class="feature-body"><span class="m-label">Latest article</span>' +
              '<h3>' + esc(L.title) + '</h3>' +
              '<p class="feature-meta">' + esc(L.journal) + (L.year ? ", " + esc(L.year) : "") + '</p>' +
-             '<p class="feature-text">' + esc(text) + '</p>' +
+             (text ? '<p class="feature-text">' + esc(text) + '</p>' : "") +
              (link ? '<a href="' + link + '" target="_blank" rel="noopener">Read the paper</a>' : "") +
              '</div></div>';
     },
