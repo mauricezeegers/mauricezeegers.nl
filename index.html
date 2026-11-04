@@ -6167,8 +6167,8 @@
   .chart{width:100%;height:auto;}
   .chart .b-prev{fill:var(--bar-prev);}
   .chart .b-cur{fill:var(--accent);}
-  .chart .b-plan{fill:var(--accent-soft);stroke:var(--accent);stroke-width:.7;stroke-dasharray:2 1.4;}
-  .chart .b-race{stroke-dasharray:none;stroke-width:1.2;}
+  .chart .b-plan{fill:var(--accent);fill-opacity:.3;}
+  .chart .b-race{fill:var(--st-few);fill-opacity:.55;}
   .chart .now{stroke:var(--ink-soft);stroke-width:.6;stroke-dasharray:1.2 2;}
   .chart .base{stroke:var(--line);stroke-width:1;}
   .chart-wrap{display:flex;flex-direction:column;gap:6px;min-width:0;}
@@ -6177,8 +6177,8 @@
   .chart-legend i{width:10px;height:10px;border-radius:2px;display:inline-block;}
   .chart-legend i.p{background:var(--bar-prev);}
   .chart-legend i.c{background:var(--accent);}
-  .chart-legend i.g{background:var(--accent-soft);border:1px dashed var(--accent);}
-  .chart-legend i.r{background:var(--accent-soft);border:1.5px solid var(--accent);}
+  .chart-legend i.g{background:var(--accent);opacity:.35;}
+  .chart-legend i.r{background:var(--st-few);opacity:.7;}
   .chart-title{font-size:.9rem;font-weight:600;margin:0;}
   .charts{display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 320px), 1fr));gap:18px;margin-top:22px;}
   .source-note{font-size:.8rem;color:var(--ink-soft);margin:10px 0 0;}
@@ -6914,7 +6914,7 @@
     return {rows: rows, cur: rows[ci], last12: last12, next12: next12};
   }
   function planChart(P){
-    var H = 120, W = 258, bw = 8, step = 10, rows = P.rows;
+    var H = 48, W = 258, bw = 5, step = 10, rows = P.rows;
     var max = Math.max.apply(null, rows.map(function(r){ return Math.max(r[1] || 0, r[2] || 0); })) || 1;
     var races = {};
     (D.races || []).forEach(function(r){
@@ -6925,18 +6925,18 @@
     });
     var hasRace = false;
     var svg = '<svg class="chart" viewBox="0 0 ' + W + ' ' + (H + 2) + '" role="img" aria-label="Distance per week: the last 12 weeks run, this week against plan, and the planned next 12 weeks">';
-    var xs = rows.map(function(r, i){ return i * step + (i >= 12 ? 4 : 0) + (i >= 13 ? 4 : 0); });
+    var xs = rows.map(function(r, i){ return i * step + 2.5 + (i >= 12 ? 4 : 0) + (i >= 13 ? 4 : 0); });
     svg += '<line class="now" x1="' + (xs[12] + bw / 2) + '" x2="' + (xs[12] + bw / 2) + '" y1="0" y2="' + H + '"/>';
     rows.forEach(function(r, i){
       var x = xs[i], d = r[1], p = r[2];
       if(p != null){
         var ph = Math.max(1, Math.round(H * p / max)), race = !!races[r[0]];
         hasRace = hasRace || race;
-        svg += '<rect class="b-plan' + (race ? ' b-race' : '') + '" x="' + x + '" y="' + (H - ph) + '" width="' + bw + '" height="' + ph + '" rx="1.5"/>';
+        svg += '<rect class="b-plan' + (race ? ' b-race' : '') + '" x="' + x + '" y="' + (H - ph) + '" width="' + bw + '" height="' + ph + '" rx="1.2"/>';
       }
       if(d != null && d > 0){
         var dh = Math.max(1, Math.round(H * d / max));
-        svg += '<rect class="b-cur" x="' + (p != null ? x + 2 : x) + '" y="' + (H - dh) + '" width="' + (p != null ? bw - 4 : bw) + '" height="' + dh + '" rx="1.5"/>';
+        svg += '<rect class="b-cur" x="' + x + '" y="' + (H - dh) + '" width="' + bw + '" height="' + dh + '" rx="1.2"/>';
       }
     });
     svg += '<line class="base" x1="0" x2="' + W + '" y1="' + (H + 0.5) + '" y2="' + (H + 0.5) + '"/></svg>';
