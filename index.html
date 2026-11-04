@@ -108,6 +108,9 @@
   profiles: optional profile links {itra, strava, utmb, wikidata}. Only entries with a url are shown; empty ones stay hidden.
   sport:    24 weekly totals, oldest first (first 12 = previous period, last 12 = latest). Totals only, never routes.
             streak = consecutive weeks with at least one run.
+            weeks = {asOf, current, rows}: current = Monday of this week; rows = [week start, run km or null, planned km or null]
+            for 12 weeks back, this week and 12 weeks ahead (25 rows). Run km from Garmin (site.py sport), the plan from the
+            Weekplan tab of the training sheet (site.py plan). Totals only. Refreshed daily by the coach routine.
             loadFocus = Garmin Load Focus (get_training_load_balance): {asOf, feedback, bands {anaerobic, aerobic_high,
             aerobic_low: {load, min, max}}}; min/max = Garmin's optimal range. feedback e.g. ANAEROBIC_SHORTAGE, BALANCED.
   bees:     status is "available", "few" or "soldout"; season is a label. Both maintained by hand.
@@ -268,6 +271,137 @@
           "max": 1116
         }
       }
+    },
+    "weeks": {
+      "asOf": "2026-11-04",
+      "current": "2026-11-02",
+      "rows": [
+        [
+          "2026-08-10",
+          22.1,
+          null
+        ],
+        [
+          "2026-08-17",
+          37.3,
+          null
+        ],
+        [
+          "2026-08-24",
+          26.1,
+          null
+        ],
+        [
+          "2026-08-31",
+          39.2,
+          null
+        ],
+        [
+          "2026-09-07",
+          47.5,
+          null
+        ],
+        [
+          "2026-09-14",
+          50.6,
+          null
+        ],
+        [
+          "2026-09-21",
+          53.7,
+          null
+        ],
+        [
+          "2026-09-28",
+          28.7,
+          null
+        ],
+        [
+          "2026-10-05",
+          23.1,
+          null
+        ],
+        [
+          "2026-10-12",
+          52.9,
+          null
+        ],
+        [
+          "2026-10-19",
+          31.3,
+          null
+        ],
+        [
+          "2026-10-26",
+          25.6,
+          15
+        ],
+        [
+          "2026-11-02",
+          27.9,
+          58
+        ],
+        [
+          "2026-11-09",
+          null,
+          50
+        ],
+        [
+          "2026-11-16",
+          null,
+          30
+        ],
+        [
+          "2026-11-23",
+          null,
+          58
+        ],
+        [
+          "2026-11-30",
+          null,
+          62
+        ],
+        [
+          "2026-12-07",
+          null,
+          64
+        ],
+        [
+          "2026-12-14",
+          null,
+          31
+        ],
+        [
+          "2026-12-21",
+          null,
+          48
+        ],
+        [
+          "2026-12-28",
+          null,
+          55
+        ],
+        [
+          "2027-01-04",
+          null,
+          62
+        ],
+        [
+          "2027-01-11",
+          null,
+          52
+        ],
+        [
+          "2027-01-18",
+          null,
+          72
+        ],
+        [
+          "2027-01-25",
+          null,
+          35
+        ]
+      ]
     }
   },
   "bees": {
@@ -6033,6 +6167,9 @@
   .chart{width:100%;height:auto;}
   .chart .b-prev{fill:var(--bar-prev);}
   .chart .b-cur{fill:var(--accent);}
+  .chart .b-plan{fill:var(--accent-soft);stroke:var(--accent);stroke-width:.7;stroke-dasharray:2 1.4;}
+  .chart .b-race{stroke-dasharray:none;stroke-width:1.2;}
+  .chart .now{stroke:var(--ink-soft);stroke-width:.6;stroke-dasharray:1.2 2;}
   .chart .base{stroke:var(--line);stroke-width:1;}
   .chart-wrap{display:flex;flex-direction:column;gap:6px;min-width:0;}
   .chart-legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.78rem;color:var(--ink-soft);}
@@ -6040,6 +6177,8 @@
   .chart-legend i{width:10px;height:10px;border-radius:2px;display:inline-block;}
   .chart-legend i.p{background:var(--bar-prev);}
   .chart-legend i.c{background:var(--accent);}
+  .chart-legend i.g{background:var(--accent-soft);border:1px dashed var(--accent);}
+  .chart-legend i.r{background:var(--accent-soft);border:1.5px solid var(--accent);}
   .chart-title{font-size:.9rem;font-weight:600;margin:0;}
   .charts{display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 320px), 1fr));gap:18px;margin-top:22px;}
   .source-note{font-size:.8rem;color:var(--ink-soft);margin:10px 0 0;}
@@ -6598,16 +6737,12 @@
         <span class="icon"><svg><use href="#icon-running"/></svg></span>
         <h2>Trail running</h2>
       </div>
-      <p class="intro">Weekly totals from Garmin.</p>
-
       <div class="banner" data-render="fig" data-slot="running-hero" data-label="Trail running photo" data-ratio="21/9" data-hide-empty="1"></div>
 
-      <div class="metrics tiles" data-render="running-metrics" data-size="tile"></div>
+      <div class="metrics tiles" data-render="running-plan-metrics"></div>
       <div class="charts">
-        <div data-render="run-chart-km" data-size="lg"></div>
-        <div data-render="run-chart-hm" data-size="lg"></div>
+        <div data-render="running-plan-chart"></div>
       </div>
-      <p class="source-note" data-render="running-source"></p>
 
       <div data-render="running-load"></div>
 
@@ -6769,26 +6904,45 @@
     return '<div class="ph" style="aspect-ratio:' + esc(ratio) + '" role="img" aria-label="Placeholder: ' + esc(label) + '"><span>' + esc(label) + '</span></div>';
   }
 
-  /* 24 weekly values, first 12 = previous period, last 12 = latest period */
-  function bars(arr, unit, size){
-    var H = size === "sm" ? 44 : 120, W = 246, bw = 8, step = 10, gap = 8;
-    var max = Math.max.apply(null, arr) || 1;
-    var svg = '<svg class="chart" viewBox="0 0 ' + W + ' ' + (H + 2) + '" role="img" aria-label="Weekly ' + unit + ', previous 12 weeks and latest 12 weeks">';
-    arr.forEach(function(v, i){
-      var h = Math.max(1, Math.round(H * v / max));
-      var x = i * step + (i >= 12 ? gap : 0);
-      svg += '<rect class="' + (i >= 12 ? "b-cur" : "b-prev") + '" x="' + x + '" y="' + (H - h) + '" width="' + bw + '" height="' + h + '" rx="1.5"/>';
+  /* training plan: 12 weeks back, this week and 12 weeks ahead; rows = [week start, run km or null, planned km or null] */
+  function planWeeks(){
+    var W = D.sport && D.sport.weeks;
+    if(!W || !W.rows || W.rows.length !== 25){ return null; }
+    var rows = W.rows, ci = 12, last12 = 0, next12 = 0;
+    rows.slice(0, 12).forEach(function(r){ last12 += r[1] || 0; });
+    rows.slice(13).forEach(function(r){ next12 += r[2] || 0; });
+    return {rows: rows, cur: rows[ci], last12: last12, next12: next12};
+  }
+  function planChart(P){
+    var H = 120, W = 258, bw = 8, step = 10, rows = P.rows;
+    var max = Math.max.apply(null, rows.map(function(r){ return Math.max(r[1] || 0, r[2] || 0); })) || 1;
+    var races = {};
+    (D.races || []).forEach(function(r){
+      var d = new Date(r.date + "T00:00:00");
+      if(isNaN(d)){ return; }
+      d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+      races[d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0")] = true;
+    });
+    var hasRace = false;
+    var svg = '<svg class="chart" viewBox="0 0 ' + W + ' ' + (H + 2) + '" role="img" aria-label="Distance per week: the last 12 weeks run, this week against plan, and the planned next 12 weeks">';
+    var xs = rows.map(function(r, i){ return i * step + (i >= 12 ? 4 : 0) + (i >= 13 ? 4 : 0); });
+    svg += '<line class="now" x1="' + (xs[12] + bw / 2) + '" x2="' + (xs[12] + bw / 2) + '" y1="0" y2="' + H + '"/>';
+    rows.forEach(function(r, i){
+      var x = xs[i], d = r[1], p = r[2];
+      if(p != null){
+        var ph = Math.max(1, Math.round(H * p / max)), race = !!races[r[0]];
+        hasRace = hasRace || race;
+        svg += '<rect class="b-plan' + (race ? ' b-race' : '') + '" x="' + x + '" y="' + (H - ph) + '" width="' + bw + '" height="' + ph + '" rx="1.5"/>';
+      }
+      if(d != null && d > 0){
+        var dh = Math.max(1, Math.round(H * d / max));
+        svg += '<rect class="b-cur" x="' + (p != null ? x + 2 : x) + '" y="' + (H - dh) + '" width="' + (p != null ? bw - 4 : bw) + '" height="' + dh + '" rx="1.5"/>';
+      }
     });
     svg += '<line class="base" x1="0" x2="' + W + '" y1="' + (H + 0.5) + '" y2="' + (H + 0.5) + '"/></svg>';
-    return svg;
-  }
-  function chartBlock(title, arr, unit, size){
-    var peak = Math.max.apply(null, arr.slice(12));
-    return '<div class="chart-wrap">' +
-      (size === "sm" ? "" : '<h4 class="chart-title">' + title + '</h4>') +
-      bars(arr, unit, size) +
-      '<div class="chart-legend"><span><i class="p"></i>Previous 12 weeks</span><span><i class="c"></i>Last 12 weeks</span>' +
-      (size === "sm" ? "" : '<span>Peak week ' + fmt(peak) + ' ' + unit + '</span>') + '</div></div>';
+    return '<div class="chart-wrap"><h4 class="chart-title">Distance per week</h4>' + svg +
+      '<div class="chart-legend"><span><i class="c"></i>Run</span><span><i class="g"></i>Plan</span>' +
+      (hasRace ? '<span><i class="r"></i>Race week</span>' : '') + '</div></div>';
   }
 
   /* ---------- beekeeping: season per hive from the HiveCompanion log ---------- */
@@ -7114,15 +7268,21 @@
         out += '<div class="metric"><span class="m-label">Training focus</span><div class="state">' + pill + '</div></div>';
       }
       out += metric("Elevation gain", fmt(hmCur) + "<small>m</small>", pctDelta(hmCur, hmPrev, lbl), "vs previous 12 weeks");
-      if(size === "tile" && S.streak && S.streak.value != null){
-        out += metric("Streak", fmt(S.streak.value) + "<small>" + esc(S.streak.unit || "weeks") + "</small>", "", "", esc(S.streak.rule || ""));
-      }
       return out;
     },
-    "run-chart-km": function(size){ return chartBlock("Distance per week", km, "km", size); },
-    "run-chart-hm": function(size){ return chartBlock("Elevation gain per week", hm, "m", size); },
-    "running-source": function(){
-      return "Weekly totals from " + esc(S.source || "Garmin") + ". " + asOf(S.asOf);
+    "running-plan-metrics": function(){
+      var P = planWeeks();
+      if(!P){ return ""; }
+      var cur = P.cur, out = metric("Last 12 weeks", fmt(P.last12) + "<small>km</small>", "", "", fmt(P.last12 / 12) + " km per week");
+      if(cur[2] != null){
+        out += metric("This week", fmt(cur[1] || 0) + "<small>of " + fmt(cur[2]) + " km</small>", "", "", fmt(100 * (cur[1] || 0) / cur[2]) + "% of the plan");
+      }
+      out += metric("Next 12 weeks", fmt(P.next12) + "<small>km planned</small>", pctDelta(P.next12, P.last12, "compared with the last 12 weeks"), "vs last 12 weeks");
+      return out;
+    },
+    "running-plan-chart": function(){
+      var P = planWeeks();
+      return P ? planChart(P) : "";
     },
 
     "bees-metrics": function(){
