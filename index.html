@@ -6167,9 +6167,16 @@
   .chart{width:100%;height:auto;}
   .chart .b-prev{fill:var(--bar-prev);}
   .chart .b-cur{fill:var(--accent);}
-  .chart .b-plan{fill:var(--accent);fill-opacity:.3;}
-  .chart .b-race{fill:var(--st-few);fill-opacity:.55;}
-  .chart .now{stroke:var(--ink-soft);stroke-width:.6;stroke-dasharray:1.2 2;}
+  .plan-svg{width:100%;min-width:0;}
+  .tiles.plan-tiles .metric{flex:1 1 150px;}
+  .chart.plan{display:block;overflow:visible;}
+  .chart.plan text{fill:var(--ink-soft);font-size:9px;font-variant-numeric:tabular-nums;}
+  .chart.plan text.t-now{fill:var(--ink);font-size:10px;font-weight:600;}
+  .chart.plan text.t-race{fill:var(--st-few);font-size:10px;font-weight:600;}
+  .chart.plan .b-plan{fill:none;stroke:var(--accent);stroke-opacity:.7;stroke-width:1;stroke-dasharray:3 2;}
+  .chart.plan .b-race{stroke:var(--st-few);stroke-opacity:.9;fill:var(--st-few);fill-opacity:.12;}
+  .chart.plan .now{stroke:var(--ink-soft);stroke-width:1;stroke-dasharray:2 3;}
+  .chart.plan .avg{fill:none;stroke:var(--lf-ana);stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round;}
   .chart .base{stroke:var(--line);stroke-width:1;}
   .chart-wrap{display:flex;flex-direction:column;gap:6px;min-width:0;}
   .chart-legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.78rem;color:var(--ink-soft);}
@@ -6177,8 +6184,9 @@
   .chart-legend i{width:10px;height:10px;border-radius:2px;display:inline-block;}
   .chart-legend i.p{background:var(--bar-prev);}
   .chart-legend i.c{background:var(--accent);}
-  .chart-legend i.g{background:var(--accent);opacity:.35;}
-  .chart-legend i.r{background:var(--st-few);opacity:.7;}
+  .chart-legend i.g{background:transparent;border:1px dashed var(--accent);}
+  .chart-legend i.r{background:transparent;border:1px dashed var(--st-few);}
+  .chart-legend i.a{height:2px;width:14px;border-radius:1px;background:var(--lf-ana);align-self:center;}
   .chart-title{font-size:.9rem;font-weight:600;margin:0;}
   .charts{display:grid;grid-template-columns:repeat(auto-fit, minmax(min(100%, 320px), 1fr));gap:18px;margin-top:22px;}
   .source-note{font-size:.8rem;color:var(--ink-soft);margin:10px 0 0;}
@@ -6739,7 +6747,7 @@
       </div>
       <div class="banner" data-render="fig" data-slot="running-hero" data-label="Trail running photo" data-ratio="21/9" data-hide-empty="1"></div>
 
-      <div class="metrics tiles" data-render="running-plan-metrics"></div>
+      <div class="metrics tiles plan-tiles" data-render="running-plan-metrics"></div>
       <div class="charts">
         <div data-render="running-plan-chart"></div>
       </div>
@@ -6914,35 +6922,67 @@
     return {rows: rows, cur: rows[ci], last12: last12, next12: next12};
   }
   function planChart(P){
-    var H = 48, W = 258, bw = 5, step = 10, rows = P.rows;
-    var max = Math.max.apply(null, rows.map(function(r){ return Math.max(r[1] || 0, r[2] || 0); })) || 1;
-    var races = {};
+    var hasRace = planRaces(P.rows).any;
+    return '<div class="chart-wrap"><h4 class="chart-title">Distance per week</h4><div class="plan-svg"></div>' +
+      '<div class="chart-legend"><span><i class="c"></i>Run</span><span><i class="g"></i>Plan</span>' +
+      (hasRace ? '<span><i class="r"></i>Race week</span>' : '') + '<span><i class="a"></i>4-week average</span></div></div>';
+  }
+  /* race weeks from D.races: week start (Monday) -> short name ("Trail de Dinant Winter" gives "Dinant") */
+  function planRaces(rows){
+    var map = {}, any = false, skip = /^(trail|de|du|winter|marathon|run|race|the)$/i;
     (D.races || []).forEach(function(r){
       var d = new Date(r.date + "T00:00:00");
       if(isNaN(d)){ return; }
       d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
-      races[d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0")] = true;
+      var ws = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+      var word = String(r.name || "").split(/\s+/).filter(function(w){ return !skip.test(w); })[0] || r.name;
+      map[ws] = word;
     });
-    var hasRace = false;
-    var svg = '<svg class="chart" viewBox="0 0 ' + W + ' ' + (H + 2) + '" role="img" aria-label="Distance per week: the last 12 weeks run, this week against plan, and the planned next 12 weeks">';
-    var xs = rows.map(function(r, i){ return i * step + 2.5 + (i >= 12 ? 4 : 0) + (i >= 13 ? 4 : 0); });
-    svg += '<line class="now" x1="' + (xs[12] + bw / 2) + '" x2="' + (xs[12] + bw / 2) + '" y1="0" y2="' + H + '"/>';
+    rows.forEach(function(r){ if(map[r[0]]){ any = true; } });
+    return {map: map, any: any};
+  }
+  function drawPlan(){
+    var box = document.querySelector(".plan-svg"), P = planWeeks();
+    if(!box || !P){ return; }
+    var W = box.clientWidth;
+    if(W < 120){ return; }
+    var rows = P.rows, n = rows.length, mt = 36, plot = 90, H = mt + plot + 3, gap = 10;
+    var step = (W - gap) / n, bw = Math.max(3, Math.min(14, step * 0.5));
+    var xs = rows.map(function(r, i){ return i * step + (i >= 12 ? gap / 2 : 0) + (i >= 13 ? gap / 2 : 0); });
+    var vals = rows.map(function(r, i){ return i < 12 ? (r[1] || 0) : (r[2] != null ? r[2] : (r[1] || 0)); });
+    var max = Math.max.apply(null, rows.map(function(r){ return Math.max(r[1] || 0, r[2] || 0); })) || 1;
+    function y(v){ return mt + plot * (1 - v / max); }
+    var races = planRaces(rows).map, labels = step >= 18;
+    var svg = '<svg class="chart plan" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Distance per week: the last 12 weeks run, this week against plan, and the planned next 12 weeks, with the four-week average">';
+    var nowX = xs[12] + step / 2;
+    svg += '<line class="now" x1="' + nowX + '" x2="' + nowX + '" y1="14" y2="' + (mt + plot) + '"/>';
+    svg += '<text class="t-now" x="' + nowX + '" y="9" text-anchor="middle">now</text>';
     rows.forEach(function(r, i){
-      var x = xs[i], d = r[1], p = r[2];
+      var x = xs[i] + (step - bw) / 2, cx = xs[i] + step / 2, d = r[1], p = r[2], race = !!races[r[0]];
       if(p != null){
-        var ph = Math.max(1, Math.round(H * p / max)), race = !!races[r[0]];
-        hasRace = hasRace || race;
-        svg += '<rect class="b-plan' + (race ? ' b-race' : '') + '" x="' + x + '" y="' + (H - ph) + '" width="' + bw + '" height="' + ph + '" rx="1.2"/>';
+        svg += '<rect class="b-plan' + (race ? ' b-race' : '') + '" x="' + (x + .5) + '" y="' + (y(p) + .5) + '" width="' + (bw - 1) + '" height="' + Math.max(1, mt + plot - y(p) - 1) + '" rx="1.5"/>';
       }
       if(d != null && d > 0){
-        var dh = Math.max(1, Math.round(H * d / max));
-        svg += '<rect class="b-cur" x="' + x + '" y="' + (H - dh) + '" width="' + bw + '" height="' + dh + '" rx="1.2"/>';
+        svg += '<rect class="b-cur" x="' + x + '" y="' + y(d) + '" width="' + bw + '" height="' + (mt + plot - y(d)) + '" rx="1.5"/>';
+      }
+      var top = Math.max(d || 0, p || 0), shown = (i < 12 || p == null) ? d : p;
+      if(shown != null && (labels || i === 12 || race)){
+        svg += '<text x="' + cx + '" y="' + (y(top) - 3) + '" text-anchor="middle">' + fmt(shown) + '</text>';
+      }
+      if(race){
+        var tx = Math.min(W - 22, Math.max(22, cx));
+        svg += '<text class="t-race" x="' + tx + '" y="' + (y(top) - 14) + '" text-anchor="middle">' + esc(races[r[0]]) + '</text>';
       }
     });
-    svg += '<line class="base" x1="0" x2="' + W + '" y1="' + (H + 0.5) + '" y2="' + (H + 0.5) + '"/></svg>';
-    return '<div class="chart-wrap"><h4 class="chart-title">Distance per week</h4>' + svg +
-      '<div class="chart-legend"><span><i class="c"></i>Run</span><span><i class="g"></i>Plan</span>' +
-      (hasRace ? '<span><i class="r"></i>Race week</span>' : '') + '</div></div>';
+    var pts = [];
+    vals.forEach(function(v, i){
+      if(i < 3){ return; }
+      var a = (vals[i] + vals[i - 1] + vals[i - 2] + vals[i - 3]) / 4;
+      pts.push((pts.length ? "L" : "M") + (xs[i] + step / 2).toFixed(1) + " " + y(a).toFixed(1));
+    });
+    svg += '<path class="avg" d="' + pts.join(" ") + '"/>';
+    svg += '<line class="base" x1="0" x2="' + W + '" y1="' + (mt + plot + .5) + '" y2="' + (mt + plot + .5) + '"/></svg>';
+    box.innerHTML = svg;
   }
 
   /* ---------- beekeeping: season per hive from the HiveCompanion log ---------- */
@@ -7274,6 +7314,10 @@
       var P = planWeeks();
       if(!P){ return ""; }
       var cur = P.cur, out = metric("Last 12 weeks", fmt(P.last12) + "<small>km</small>", "", "", fmt(P.last12 / 12) + " km per week");
+      var prev = P.rows[11];
+      if(prev && prev[2] != null){
+        out += metric("Last week", fmt(prev[1] || 0) + "<small>of " + fmt(prev[2]) + " km</small>", "", "", fmt(100 * (prev[1] || 0) / prev[2]) + "% of the plan");
+      }
       if(cur[2] != null){
         out += metric("This week", fmt(cur[1] || 0) + "<small>of " + fmt(cur[2]) + " km</small>", "", "", fmt(100 * (cur[1] || 0) / cur[2]) + "% of the plan");
       }
@@ -7410,6 +7454,13 @@
     var fn = R[el.getAttribute("data-render")];
     if(fn){ el.innerHTML = fn(el.getAttribute("data-size"), el); }
   });
+
+  (function(){
+    var pb = document.querySelector(".plan-svg");
+    if(!pb){ return; }
+    drawPlan();
+    if(window.ResizeObserver){ new ResizeObserver(drawPlan).observe(pb); } else { window.addEventListener("resize", drawPlan); }
+  })();
 
   if(D.provisional){ document.getElementById("notice").classList.add("on"); }
   if(D.updated){
