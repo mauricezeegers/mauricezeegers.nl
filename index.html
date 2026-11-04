@@ -6175,6 +6175,7 @@
   .chart.plan text.t-race{fill:var(--st-few);font-size:10px;font-weight:600;}
   .chart.plan .b-plan{fill:none;stroke:var(--accent);stroke-opacity:.7;stroke-width:1;stroke-dasharray:3 2;}
   .chart.plan .b-race{stroke:var(--st-few);stroke-opacity:.9;fill:var(--st-few);fill-opacity:.12;}
+  .chart.plan .b-over{stroke:var(--ink);stroke-opacity:.9;}
   .chart.plan .now{stroke:var(--ink-soft);stroke-width:1;stroke-dasharray:2 3;}
   .chart.plan .avg{fill:none;stroke:var(--lf-ana);stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round;}
   .chart .base{stroke:var(--line);stroke-width:1;}
@@ -6959,11 +6960,11 @@
     svg += '<text class="t-now" x="' + nowX + '" y="9" text-anchor="middle">now</text>';
     rows.forEach(function(r, i){
       var x = xs[i] + (step - bw) / 2, cx = xs[i] + step / 2, d = r[1], p = r[2], race = !!races[r[0]];
-      if(p != null){
-        svg += '<rect class="b-plan' + (race ? ' b-race' : '') + '" x="' + (x + .5) + '" y="' + (y(p) + .5) + '" width="' + (bw - 1) + '" height="' + Math.max(1, mt + plot - y(p) - 1) + '" rx="1.5"/>';
-      }
       if(d != null && d > 0){
         svg += '<rect class="b-cur" x="' + x + '" y="' + y(d) + '" width="' + bw + '" height="' + (mt + plot - y(d)) + '" rx="1.5"/>';
+      }
+      if(p != null){
+        svg += '<rect class="b-plan' + (race ? ' b-race' : '') + (d != null ? ' b-over' : '') + '" x="' + (x + .5) + '" y="' + (y(p) + .5) + '" width="' + (bw - 1) + '" height="' + Math.max(1, mt + plot - y(p) - 1) + '" rx="1.5"/>';
       }
       var top = Math.max(d || 0, p || 0), shown = (i < 12 || p == null) ? d : p;
       if(shown != null && (labels || i === 12 || race)){
@@ -7314,10 +7315,6 @@
       var P = planWeeks();
       if(!P){ return ""; }
       var cur = P.cur, out = metric("Last 12 weeks", fmt(P.last12) + "<small>km</small>", "", "", fmt(P.last12 / 12) + " km per week");
-      var prev = P.rows[11];
-      if(prev && prev[2] != null){
-        out += metric("Last week", fmt(prev[1] || 0) + "<small>of " + fmt(prev[2]) + " km</small>", "", "", fmt(100 * (prev[1] || 0) / prev[2]) + "% of the plan");
-      }
       if(cur[2] != null){
         out += metric("This week", fmt(cur[1] || 0) + "<small>of " + fmt(cur[2]) + " km</small>", "", "", fmt(100 * (cur[1] || 0) / cur[2]) + "% of the plan");
       }
