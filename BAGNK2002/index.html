@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Diagnostiek: hoe zeker ben je van je test?</title>
+<style>
+:root{
+  --bg:#f6f4ef; --ink:#14213d; --muted:#5b6475; --line:#d9d5ca;
+  --navy:#14213d; --teal:#0f7f86; --teal-l:#d7eeee; --ochre:#b9741a; --ochre-l:#f6e6cc;
+  --red:#a8322d; --red-l:#fde8e6; --card:#ffffff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#1b1f2a;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:var(--ink)}
+#stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform-origin:center center}
+.slide{position:absolute;inset:0;background:var(--bg);padding:48px 72px 60px;display:none;overflow:hidden}
+.slide.on{display:block}
+.blocktag{position:absolute;left:72px;top:22px;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);font-weight:600}
+h1{font-size:46px;line-height:1.1;margin:30px 0 18px;font-weight:700}
+h2{font-size:38px;line-height:1.15;margin:30px 0 16px;font-weight:700}
+p,li{font-size:24px;line-height:1.4}
+ul{padding-left:24px;margin:8px 0}
+li{margin:8px 0}
+.src{position:absolute;left:72px;right:72px;bottom:18px;font-size:14px;line-height:1.35;color:var(--muted);border-top:1px solid var(--line);padding-top:8px}
+.src b{color:var(--ink)}
+.pg{position:absolute;right:30px;top:22px;font-size:14px;color:var(--muted)}
+.cols{display:grid;gap:28px}
+.c2{grid-template-columns:1fr 1fr}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 26px}
+.card h3{margin:0 0 8px;font-size:26px}
+.card p,.card li{font-size:20px;line-height:1.32;margin:6px 0}
+.card.t{border-top:8px solid var(--teal)}
+.card.o{border-top:8px solid var(--ochre)}
+.card.n{border-top:8px solid var(--navy)}
+.tag{display:inline-block;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:20px;background:var(--teal-l);color:var(--teal)}
+.tag.o{background:var(--ochre-l);color:var(--ochre)}
+.dummy{display:inline-block;font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:4px;background:var(--red-l);color:var(--red);border:1px solid var(--red)}
+.big{font-size:32px;font-weight:700;line-height:1.25}
+.quiet{color:var(--muted)}
+.strip{background:var(--navy);color:#fff;border-radius:12px;padding:14px 22px}
+.strip p{font-size:22px;margin:0}
+.tbl{border-collapse:collapse;width:100%;background:#fff;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.tbl th,.tbl td{padding:12px 14px;text-align:left;font-size:22px;line-height:1.3;border-bottom:1px solid var(--line);vertical-align:middle}
+.tbl th{background:#e9eef2;font-size:18px}
+.tbl td.c,.tbl th.c{text-align:center}
+.tbl tr.tot td{font-weight:700;background:#f1f5f7}
+.tbl.s th,.tbl.s td{font-size:18px;padding:7px 12px}
+.m2{border-collapse:separate;border-spacing:6px;width:100%}
+.m2 td,.m2 th{text-align:center;font-size:20px;line-height:1.25;padding:10px 8px;border-radius:10px;vertical-align:middle}
+.m2 th{font-size:16px;font-weight:700;color:var(--muted);background:none;letter-spacing:.04em}
+.m2 .tp{background:var(--teal-l);border:2px solid var(--teal)}
+.m2 .tn{background:var(--teal-l);border:2px solid var(--teal)}
+.m2 .fp{background:var(--ochre-l);border:2px solid var(--ochre)}
+.m2 .fn{background:var(--ochre-l);border:2px solid var(--ochre)}
+.m2 .sum{background:#eef0f4;border:2px solid #c9ccd4;font-weight:700}
+.m2 b.l{display:block;font-size:26px}
+.m2 small{display:block;font-size:14px;color:var(--muted);margin-top:2px}
+.m2 td.rowh{background:none;font-weight:700;font-size:17px;color:var(--muted);text-align:right;width:130px}
+.zbar{position:relative;display:flex;height:86px;border-radius:12px;overflow:hidden;border:1px solid #b9c0cc;margin-top:6px}
+.zbar .z{display:flex;align-items:center;justify-content:center;text-align:center;padding:6px 10px;font-size:17px;line-height:1.2;font-weight:600}
+.z1{background:#cfeaea;color:#0f5c62}.z2{background:#eef0f4;color:#3b4457}.z3{background:#f6e6cc;color:#7a4a0c}
+.zax{display:flex;justify-content:space-between;font-size:15px;color:var(--muted);margin-top:4px}
+.th{position:absolute;top:-6px;bottom:-6px;width:0;border-left:3px dashed var(--navy)}
+.thl{position:absolute;top:-30px;font-size:16px;font-weight:700;color:var(--navy);transform:translateX(-50%);white-space:nowrap}
+.pill{display:inline-block;border-radius:20px;padding:3px 12px;font-size:16px;font-weight:700}
+.step{display:flex;align-items:center;gap:14px;margin:16px 0}
+.step .n{flex:none;width:36px;height:36px;border-radius:50%;background:var(--teal);color:#fff;font-weight:700;font-size:20px;display:flex;align-items:center;justify-content:center}
+.step p{margin:0;font-size:25px;line-height:1.3}
+.ph{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.pbox{background:#fff;border:1px solid var(--line);border-top:6px solid var(--teal);border-radius:10px;padding:12px 14px}
+.pbox .pn{font-weight:700;color:var(--teal);font-size:17px;letter-spacing:.06em;text-transform:uppercase}
+.pbox b{display:block;font-size:24px;margin:2px 0 6px}
+.pbox span{display:block;font-size:19px;line-height:1.3;color:var(--muted)}
+.pbox .pp{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);font-size:17px;color:var(--ink)}
+.arrow{font-size:26px;color:var(--teal);text-align:center;line-height:1}
+input[type=range]{width:100%;accent-color:#0f7f86}
+.num{font-size:44px;font-weight:700;line-height:1}
+.num small{display:block;font-size:15px;font-weight:600;color:var(--muted);margin-top:4px;letter-spacing:.04em}
+.q{border-left:6px solid var(--ochre);background:var(--ochre-l);border-radius:0 12px 12px 0;padding:12px 20px}
+.q p{margin:0;font-size:22px}
+a{color:#0f5c62}
+@media print{
+  html,body{background:#fff}
+  #stage{position:static;transform:none!important;width:auto;height:auto}
+  .slide{display:block;position:relative;width:1280px;height:720px;page-break-after:always}
+  @page{size:1280px 720px;margin:0}
+  #hint{display:none}
+}
+#hint{position:fixed;right:12px;bottom:8px;color:#8b93a5;font-size:12px}
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- ===== 1 TITEL ===== -->
+<section class="slide">
+  <div class="blocktag">Acute zorg II · CAT diagnose 1</div>
+  <h1 style="font-size:62px;margin-top:70px">Diagnostiek:<br>hoe zeker ben je van je test?</h1>
+  <p style="font-size:30px;margin:0 0 34px" class="quiet">van pijn op de borst tot een onderbouwd antwoord op een klinische vraag</p>
+  <div class="cols" style="grid-template-columns:1.25fr 1fr;align-items:start">
+    <div>
+      <p style="margin:0"><b>Maurice Zeegers</b></p>
+      <p style="margin:2px 0 14px">Hoogleraar epidemiologie, Maastricht University</p>
+      <ul style="font-size:19px">
+        <li>Werkt aan meta-onderzoek<br><span class="quiet" style="font-size:15px">github.com/mauricezeegers/meta-research</span></li>
+        <li style="margin-top:8px">Werkt aan observationeel onderzoek<br><span class="quiet" style="font-size:15px">github.com/mauricezeegers/observational-studies</span></li>
+      </ul>
+      <p style="font-size:16px;line-height:1.4;color:#0f5c62;opacity:.85;margin:26px 0 0;padding-left:14px;border-left:3px solid #0f7f86">Kijk mee op je eigen scherm: <a href="https://mauricezeegers.nl/BAGNK2002/" target="_blank" rel="noopener" style="color:inherit">mauricezeegers.nl/BAGNK2002</a></p>
+    </div>
+    <svg viewBox="0 0 520 277" width="100%" height="277" role="img" aria-label="Lijntekening van een hart met een ECG-lijn" style="border-radius:14px;border:1px solid #d9d5ca;background:#fbfaf6">
+      <g fill="none" stroke="#14213d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M260 235 C150 160 120 95 165 62 C200 38 244 56 260 90 C276 56 320 38 355 62 C400 95 370 160 260 235 Z"/>
+        <path d="M260 235 C165 168 140 105 175 78" opacity=".45"/>
+        <path d="M260 235 C355 168 380 105 345 78" opacity=".45"/>
+        <path d="M200 70 C215 62 232 66 244 80" opacity=".5"/>
+        <path d="M284 80 C296 66 313 62 328 70" opacity=".5"/>
+      </g>
+      <polyline fill="none" stroke="#0f7f86" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round" points="30,150 120,150 140,150 156,118 172,182 190,150 232,150 250,150 262,92 278,206 292,150 340,150 360,138 378,150 490,150"/>
+      <circle cx="262" cy="92" r="7" fill="#b9741a"/>
+    </svg>
+  </div>
+  <div class="src">Afdeling Epidemiologie · www.meta-research.nl</div>
+</section>
+
+<!-- ===== 2 CASUS + RULE IN / RULE OUT ===== -->
+<section class="slide">
+  <div class="blocktag">1 · Scenario</div>
+  <h2 style="margin-bottom:12px">Pijn op de borst: hoe zeker moet je zijn?</h2>
+  <div class="cols" style="grid-template-columns:1fr 1.15fr;align-items:start">
+    <div class="card n">
+      <h3>De casus</h3>
+      <p><b>Vrouw, 42 jaar</b>, polikliniek cardiologie. Zes maanden stekende pijn op de borst en kortademigheid bij inspanning, begonnen in een periode van overspannenheid.</p>
+      <p>Roken (20 per dag), positieve familieanamnese, hoog cholesterol en glucose. BMI 39, RR 195/100.</p>
+      <p>Rust-ECG normaal, troponine T 0,02 µg/l.</p>
+      <p style="color:#0f5c62"><b>Jij verwacht psychosociale klachten</b>, maar coronairlijden is niet helemaal uit te sluiten.</p>
+    </div>
+    <div>
+      <div class="q" style="margin-bottom:46px"><p><b>Hoe zeker ben je van coronairlijden?</b> Hoe zeker moet je zijn om te behandelen, en hoe zeker om uit te sluiten?</p></div>
+      <div style="position:relative;margin-top:30px">
+        <div class="zbar">
+          <div class="z z1" style="width:22%">uitsluiten<br>(rule out)</div>
+          <div class="z z2" style="width:46%">onzeker</div>
+          <div class="z z3" style="width:32%">aantonen<br>(rule in)</div>
+          <div class="th" style="left:22%"></div><div class="th" style="left:68%"></div>
+        </div>
+        <div class="thl" style="left:22%">A · testdrempel</div><div class="thl" style="left:68%">B · behandeldrempel</div>
+        <div class="zax"><span>0%</span><span>kans op coronairlijden</span><span>100%</span></div>
+      </div>
+      <ul class="sm" style="font-size:19px;margin-top:14px">
+        <li style="font-size:19px"><b>Onder A:</b> geen verdere diagnostiek, eventueel verwijzen vanwege een psychosociale oorzaak.</li>
+        <li style="font-size:19px"><b>Boven B:</b> direct behandelen, hier een coronair angiogram (CAG) en bij een stenose een stent.</li>
+        <li style="font-size:19px"><b>Ertussen:</b> verder testen.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3 VOLGENDE STAP ===== -->
+<section class="slide">
+  <div class="blocktag">1 · Scenario</div>
+  <h2 style="margin-bottom:10px">Volgende stap: verder testen</h2>
+  <p class="big" style="margin:0 0 20px">De kans op coronairlijden ligt bij deze patiënt tussen de twee drempels.</p>
+  <div style="position:relative;margin:50px 0 6px">
+    <div class="zbar" style="height:70px">
+      <div class="z z1" style="width:22%">uitsluiten</div>
+      <div class="z z2" style="width:46%;position:relative">onzeker: verder testen</div>
+      <div class="z z3" style="width:32%">aantonen</div>
+      <div class="th" style="left:22%"></div><div class="th" style="left:68%"></div>
+    </div>
+    <div class="thl" style="left:22%">A</div><div class="thl" style="left:68%">B</div>
+    <svg viewBox="0 0 1136 40" width="100%" height="40" style="display:block;margin-top:2px"><path d="M255 4 V14 H570 V4 M412 14 V34" stroke="#0f7f86" stroke-width="3" fill="none"/><text x="425" y="32" font-size="18" fill="#0f5c62" font-weight="700">deze patiënt: priorkans 5 tot 15%</text></svg>
+  </div>
+  <div class="cols c2" style="margin-top:8px;align-items:stretch">
+    <div class="card t">
+      <h3>CT-angiogram (CTA)</h3>
+      <p>Een nieuwe diagnostische test voor coronairlijden.</p>
+      <p>In tegenstelling tot de CAG is de CTA <b>niet invasief</b>.</p>
+    </div>
+    <div class="card o">
+      <h3>De vraag</h3>
+      <p><b>Biedt een CTA voldoende zekerheid om coronairlijden bij deze vrouw uit te sluiten of aan te tonen?</b></p>
+      <p class="quiet" style="font-size:17px">Hier wil je uitsluiten: met de test onder de testdrempel (A) komen.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 4 2x2 PRIOR / POSTERIOR ===== -->
+<section class="slide">
+  <div class="blocktag">2 · De test</div>
+  <h2 style="margin-bottom:8px">Een test verandert een kans</h2>
+  <p style="margin:0 0 14px;font-size:22px" class="quiet">Zet alle patiënten in een 2x2-tabel: de uitkomst van de test tegenover de werkelijke ziektestatus.</p>
+  <div class="cols" style="grid-template-columns:1.1fr 1fr;align-items:start">
+    <table class="m2">
+      <tr><td class="rowh"></td><th>ZIEK</th><th>GEZOND</th><td class="rowh" style="width:90px"></td></tr>
+      <tr><td class="rowh">TEST POSITIEF</td><td class="tp"><b class="l">a</b><small>terecht positief</small></td><td class="fp"><b class="l">b</b><small>foutpositief</small></td><td class="rowh" style="text-align:left">a+b</td></tr>
+      <tr><td class="rowh">TEST NEGATIEF</td><td class="fn"><b class="l">c</b><small>foutnegatief</small></td><td class="tn"><b class="l">d</b><small>terecht negatief</small></td><td class="rowh" style="text-align:left">c+d</td></tr>
+      <tr><td class="rowh"></td><td class="sum">a+c</td><td class="sum">b+d</td><td></td></tr>
+    </table>
+    <div>
+      <div class="card n" style="margin-bottom:12px"><h3>Priorkans</h3><p style="margin:0">De kans op ziekte vóór de test: <b>(a+c) / (a+b+c+d)</b>. Dit is de prevalentie in de groep waar jouw patiënt uit komt.</p></div>
+      <div class="card t" style="margin-bottom:12px"><h3>Test positief</h3><p style="margin:0">Posteriorkans = de positief voorspellende waarde (PVW): <b>a / (a+b)</b>.</p></div>
+      <div class="card o"><h3>Test negatief</h3><p style="margin:0">Posteriorkans = de negatief voorspellende waarde (NVW): <b>d / (c+d)</b>.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 5 PREVALENTIE ===== -->
+<section class="slide">
+  <div class="blocktag">2 · De test</div>
+  <h2 style="margin-bottom:6px">Dezelfde test, andere priorkans</h2>
+  <p style="margin:0 0 14px;font-size:22px">Een test met sensitiviteit 90% en specificiteit 90%, bij 1000 patiënten. <span class="dummy">Voorbeeldgetallen</span></p>
+  <div class="cols c2" style="align-items:start">
+    <div class="card t">
+      <h3>Priorkans 5% (50 ziek, 950 gezond)</h3>
+      <table class="m2" style="margin:0"><tr><td class="rowh">POSITIEF</td><td class="tp"><b class="l">45</b></td><td class="fp"><b class="l">95</b></td></tr><tr><td class="rowh">NEGATIEF</td><td class="fn"><b class="l">5</b></td><td class="tn"><b class="l">855</b></td></tr><tr><td></td><th>ZIEK</th><th>GEZOND</th></tr></table>
+      <p><b>PVW 32%</b> (45 van 140). Twee van de drie positieven zijn niet ziek.</p>
+      <p><b>NVW 99%</b> (855 van 860).</p>
+    </div>
+    <div class="card o">
+      <h3>Priorkans 50% (500 ziek, 500 gezond)</h3>
+      <table class="m2" style="margin:0"><tr><td class="rowh">POSITIEF</td><td class="tp"><b class="l">450</b></td><td class="fp"><b class="l">50</b></td></tr><tr><td class="rowh">NEGATIEF</td><td class="fn"><b class="l">50</b></td><td class="tn"><b class="l">450</b></td></tr><tr><td></td><th>ZIEK</th><th>GEZOND</th></tr></table>
+      <p><b>PVW 90%</b> (450 van 500).</p>
+      <p><b>NVW 90%</b> (450 van 500).</p>
+    </div>
+  </div>
+  <div class="strip" style="margin-top:14px"><p>Sensitiviteit en specificiteit blijven gelijk. PVW en NVW verschuiven met de priorkans: bij een lage priorkans is een positieve test vaak foutpositief.</p></div>
+</section>
+
+<!-- ===== 6 PRIORKANS ===== -->
+<section class="slide">
+  <div class="blocktag">2 · De test</div>
+  <h2 style="margin-bottom:8px">Wat bepaalt de priorkans?</h2>
+  <div class="cols" style="grid-template-columns:1.5fr 1fr;align-items:start">
+    <div>
+      <p style="margin:0 0 6px;font-size:19px" class="quiet">Pijn op de borst, van lage naar hoge priorkans op een myocardinfarct:</p>
+      <table class="tbl s">
+        <tr><td class="c" style="width:44px"><b>1</b></td><td>Huisarts: vrouw van 23 met af en toe pijn op de borst, verder geen symptomen</td></tr>
+        <tr><td class="c"><b>2</b></td><td>Huisarts: vrouw van 53 met pijn op de borst bij zware inspanning</td></tr>
+        <tr><td class="c"><b>3</b></td><td>Huisarts: man van 53 met pijn op de borst bij zware inspanning</td></tr>
+        <tr><td class="c"><b>4</b></td><td>Huisartsenpost: vrouw van 63, pijn op de borst in rust en vegetatieve verschijnselen</td></tr>
+        <tr><td class="c"><b>5</b></td><td>SEH: patiënt van 63, pijn op de borst in rust en vegetatieve verschijnselen</td></tr>
+        <tr><td class="c"><b>6</b></td><td>IC: patiënt van 63, pijn op de borst in rust en vegetatieve verschijnselen</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="card t" style="margin-bottom:12px"><h3>De priorkans hangt af van</h3>
+        <ul style="margin:0"><li>ernst van de symptomen</li><li>de setting (1e, 2e of 3e lijn)</li><li>kenmerken van de patiënt</li><li>uitslagen van eerdere tests</li></ul></div>
+      <div class="card o"><h3>Niet de landelijke prevalentie</h3><p style="margin:0">In 2018 had 2,8% van de mensen van 12 jaar en ouder ooit een hartinfarct gehad. Dat zegt niets over de kans bij deze patiënt, nu.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 7 SCENARIO + DILEMMA + VRAAG ===== -->
+<section class="slide">
+  <div class="blocktag">2 · De test</div>
+  <h2 style="margin-bottom:10px">Klinisch scenario, dilemma en klinische vraag</h2>
+  <div class="cols" style="grid-template-columns:1fr 1.2fr;align-items:start">
+    <div class="card n">
+      <h3>Checklist scenario</h3>
+      <table class="tbl" style="border:none">
+        <tr><td><b>Priorkans</b></td><td>5 tot 15%</td></tr>
+        <tr><td><b>Testdrempel</b></td><td>onder de priorkans</td></tr>
+        <tr><td><b>Behandeldrempel</b></td><td>boven de priorkans</td></tr>
+        <tr><td><b>Risico bij missen</b></td><td>mogelijk infarct</td></tr>
+        <tr><td><b>Risico behandeling</b></td><td>CAG en stent zijn invasief</td></tr>
+        <tr><td><b>Doel van de test</b></td><td>uitsluiten</td></tr>
+      </table>
+    </div>
+    <div>
+      <div class="card t">
+        <h3>De klinische vraag</h3>
+        <p style="font-size:25px;line-height:1.55">Is de <span class="pill" style="background:#cfeaea;color:#0f5c62">negatief voorspellende waarde</span> van een <span class="pill" style="background:var(--teal-l);color:#0f5c62">CT-angiogram (CTA)</span> hoog genoeg om, in vergelijking met <span class="pill" style="background:var(--ochre-l);color:#7a4a0c">coronaire angiografie (CAG)</span>, met voldoende zekerheid <b>coronaire hartziekte uit te sluiten</b> bij <span class="pill" style="background:#eef0f4;color:#3b4457">een 42-jarige vrouw met pijn op de borst</span>, die rookt, BMI 39, hyperlipidemie en een verhoogde bloedsuikerspiegel heeft, met een normaal rust-ECG en troponine T, en een positieve familieanamnese?</p>
+      </div>
+      <p class="quiet" style="font-size:21px;margin:14px 0 0">Een goede vraag noemt: de patiënt, de test, de referentietest en de uitkomst.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 8 DIAGNOSTISCH PROCES ===== -->
+<section class="slide">
+  <div class="blocktag">2 · De test</div>
+  <h2 style="margin-bottom:8px">Het diagnostisch proces</h2>
+  <p style="margin:0 0 16px;font-size:22px" class="quiet">Elke stap geeft een posteriorkans, die de priorkans voor de volgende stap wordt. De tests worden duurder, invasiever en belastender.</p>
+  <div class="ph">
+    <div class="pbox"><div class="pn">Fase 1</div><b>Anamnese en lichamelijk onderzoek</b><span>Levert posteriorkans 1</span></div>
+    <div class="pbox"><div class="pn">Fase 2</div><b>Eenvoudige test</b><span>bijvoorbeeld laboratoriumonderzoek</span><div class="pp">Posteriorkans 1 is nu priorkans 2</div></div>
+    <div class="pbox"><div class="pn">Fase 3</div><b>Geavanceerde test</b><span>bijvoorbeeld ECG-technieken of beeldvorming</span><div class="pp">Posteriorkans 2 is nu priorkans 3</div></div>
+    <div class="pbox" style="border-top-color:var(--ochre)"><div class="pn" style="color:var(--ochre)">Fase 4</div><b>Invasieve test</b><span>bijvoorbeeld angiografie of lumbaalpunctie</span><div class="pp">Posteriorkans 3 is nu priorkans 4</div></div>
+  </div>
+  <svg viewBox="0 0 1136 36" width="100%" height="36" style="display:block;margin:4px 0"><defs><marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#0f7f86"/></marker></defs><line x1="20" y1="18" x2="1110" y2="18" stroke="#0f7f86" stroke-width="3" marker-end="url(#ar)"/><text x="30" y="12" font-size="14" fill="#5b6475">meer kosten, meer invasief, meer belasting voor de patiënt</text></svg>
+  <div style="position:relative;margin-top:30px">
+    <div class="zbar" style="height:84px">
+      <div class="z z1" style="width:22%">ziekte uitgesloten<br>niets meer doen</div>
+      <div class="z z2" style="width:46%">ziekte onzeker: verder testen</div>
+      <div class="z z3" style="width:32%">ziekte aangetoond<br>behandelen</div>
+      <div class="th" style="left:22%"></div><div class="th" style="left:68%"></div>
+    </div>
+    <div class="thl" style="left:22%">A · testdrempel</div><div class="thl" style="left:68%">B · behandeldrempel</div>
+  </div>
+  <p class="quiet" style="font-size:19px;margin:16px 0 0">A en B hangen af van de prognose van de ziekte, de voor- en nadelen van de behandeling en de voor- en nadelen van de alternatieve test.</p>
+</section>
+
+<!-- ===== 9 SENS / SPEC ===== -->
+<section class="slide">
+  <div class="blocktag">3 · Sensitiviteit en specificiteit</div>
+  <h2 style="margin-bottom:8px">Hoe valide is mijn test?</h2>
+  <div class="cols" style="grid-template-columns:1.1fr 1fr;align-items:start">
+    <table class="m2">
+      <tr><td class="rowh"></td><th>ZIEK</th><th>GEZOND</th></tr>
+      <tr><td class="rowh">TEST POSITIEF</td><td class="tp"><b class="l">a</b><small>terecht positief</small></td><td class="fp"><b class="l">b</b><small>foutpositief</small></td></tr>
+      <tr><td class="rowh">TEST NEGATIEF</td><td class="fn"><b class="l">c</b><small>foutnegatief</small></td><td class="tn"><b class="l">d</b><small>terecht negatief</small></td></tr>
+      <tr><td class="rowh"></td><td class="sum">a+c</td><td class="sum">b+d</td></tr>
+    </table>
+    <div>
+      <div class="card t" style="margin-bottom:12px"><h3>Sensitiviteit = a / (a+c)</h3><p style="margin:0">De kans op een positieve test als de patiënt echt ziek is. Je leest de kolom <b>ziek</b>.</p></div>
+      <div class="card o" style="margin-bottom:12px"><h3>Specificiteit = d / (b+d)</h3><p style="margin:0">De kans op een negatieve test als de patiënt echt gezond is. Je leest de kolom <b>gezond</b>.</p></div>
+      <div class="strip"><p><b>Kolommen</b> (zieke en gezonde groep) beschrijven de test op groepsniveau. <b>Rijen</b> (PVW en NVW) vertalen de uitslag naar jouw patiënt.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 10 GOUDEN STANDAARD ===== -->
+<section class="slide">
+  <div class="blocktag">3 · Sensitiviteit en specificiteit</div>
+  <h2 style="margin-bottom:8px">Zonder goede referentietest klopt de tabel niet</h2>
+  <p class="big" style="margin:0 0 16px;font-size:28px">Wie is ziek en wie is gezond? Dat bepaalt de <b>referentietest</b> (gouden standaard).</p>
+  <div class="cols" style="grid-template-columns:repeat(3,1fr);align-items:stretch">
+    <div class="card t"><h3>Angststoornis</h3><p>SCID of MINI, gebaseerd op de DSM-5</p></div>
+    <div class="card t"><h3>Atriumfibrilleren</h3><p>12-kanaals ECG</p></div>
+    <div class="card t"><h3>Longemfyseem</h3><p>CT thorax (HRCT)</p></div>
+  </div>
+  <div class="cols c2" style="margin-top:16px;align-items:start">
+    <div class="card o"><h3>Let op</h3><p style="margin:0">De test die in de praktijk gebruikt wordt, is niet automatisch een goede referentietest. De gouden standaard is de test die het best vaststelt of de ziekte er is.</p></div>
+    <div class="card n"><h3>Waarom het uitmaakt</h3><p style="margin:0">Deelt de referentietest patiënten verkeerd in, dan staan a, b, c en d in de verkeerde cel en kloppen sensitiviteit en specificiteit niet.</p></div>
+  </div>
+</section>
+
+<!-- ===== 11 AFKAPPUNTEN (SLIDER) ===== -->
+<section class="slide">
+  <div class="blocktag">4 · Afkappunten</div>
+  <h2 style="margin-bottom:6px">Het afkappunt: schuif en kijk</h2>
+  <p style="margin:0 0 6px;font-size:21px">Troponine is een continue uitkomst. Boven het afkappunt noem je de test positief. <span class="dummy">Gesimuleerde verdelingen</span></p>
+  <div class="cols" style="grid-template-columns:1.55fr 1fr;align-items:start">
+    <div>
+      <svg id="dist" viewBox="0 0 700 300" width="100%" role="img" aria-label="Twee overlappende verdelingen met een verschuifbaar afkappunt"></svg>
+      <div class="noclick"><input id="cut" type="range" min="-1" max="3.5" step="0.05" value="1"></div>
+      <div style="display:flex;justify-content:space-between;font-size:15px;color:#5b6475"><span>laag afkappunt</span><span>hoog afkappunt</span></div>
+    </div>
+    <div>
+      <div class="cols" style="grid-template-columns:1fr 1fr;gap:12px">
+        <div class="card t" style="padding:14px 18px"><div class="num" id="sens">84%</div><small style="font-weight:700;color:#5b6475;font-size:15px">SENSITIVITEIT</small></div>
+        <div class="card o" style="padding:14px 18px"><div class="num" id="spec">84%</div><small style="font-weight:700;color:#5b6475;font-size:15px">SPECIFICITEIT</small></div>
+      </div>
+      <ul style="font-size:19px;margin-top:14px">
+        <li style="font-size:19px"><b>Afkappunt omlaag:</b> sensitiviteit omhoog, specificiteit omlaag.</li>
+        <li style="font-size:19px"><b>Afkappunt omhoog:</b> specificiteit omhoog, sensitiviteit omlaag.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 12 UITSLUITEN OF AANTONEN ===== -->
+<section class="slide">
+  <div class="blocktag">4 · Afkappunten</div>
+  <h2 style="margin-bottom:10px">Welk afkappunt past bij je doel?</h2>
+  <div class="cols c2" style="align-items:stretch">
+    <div class="card t">
+      <h3>Uitsluiten (rule out)</h3>
+      <p><b>Laag afkappunt</b>: hoge sensitiviteit.</p>
+      <p>Weinig foutnegatieven. Een negatieve test sluit de ziekte met meer zekerheid uit.</p>
+      <p>Prijs: meer foutpositieven, dus meer vervolgonderzoek.</p>
+    </div>
+    <div class="card o">
+      <h3>Aantonen (rule in)</h3>
+      <p><b>Hoog afkappunt</b>: hoge specificiteit.</p>
+      <p>Weinig foutpositieven. Een positieve test toont de ziekte met meer zekerheid aan.</p>
+      <p>Prijs: meer foutnegatieven, dus meer gemiste zieken.</p>
+    </div>
+  </div>
+  <div class="strip" style="margin-top:18px"><p>Bij onze patiënt wil je uitsluiten: je zoekt een test met een hoge negatief voorspellende waarde.</p></div>
+  <p class="quiet" style="font-size:18px;margin-top:14px">Kies het afkappunt niet los van de patiënt: kijk naar de gevolgen van een gemiste diagnose en naar de gevolgen van onnodig vervolgonderzoek.</p>
+</section>
+
+<!-- ===== 13 ROC ===== -->
+<section class="slide">
+  <div class="blocktag">4 · Afkappunten</div>
+  <h2 style="margin-bottom:6px">De ROC-curve: sensitiviteit en specificiteit hangen samen</h2>
+  <p style="margin:0 0 6px;font-size:20px">Elk punt op de curve is één afkappunt. <span class="dummy">Gesimuleerde data</span></p>
+  <div class="cols" style="grid-template-columns:1.1fr 1fr;align-items:start">
+    <svg id="roc" viewBox="0 0 480 410" style="max-height:440px" width="100%" role="img" aria-label="ROC-curve met drie afkappunten"></svg>
+    <div>
+      <div class="card t" style="margin-bottom:12px"><h3>Hoe lees je hem?</h3>
+        <ul style="margin:0"><li>Verticaal: sensitiviteit. Horizontaal: 1 min specificiteit (de foutpositieven).</li><li>Linksboven is beter, de diagonaal is niet beter dan gokken.</li></ul></div>
+      <div class="card o"><h3>Wat zie je?</h3>
+        <ul style="margin:0"><li><b>Laag afkappunt</b> (rechtsboven): bijna alle zieken gevonden, veel foutpositieven.</li><li><b>Hoog afkappunt</b> (linksonder): weinig foutpositieven, meer gemiste zieken.</li><li>Omhoog in sensitiviteit kost je altijd iets in specificiteit.</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 14 JOUW PATIENT VS STUDIE ===== -->
+<section class="slide">
+  <div class="blocktag">5 · Jouw patiënt</div>
+  <h2 style="margin-bottom:8px">Jouw patiënt versus de studiepopulatie</h2>
+  <div class="cols" style="grid-template-columns:1fr 1fr;align-items:start">
+    <div>
+      <div class="card n" style="margin-bottom:12px"><h3>De studie</h3><p style="margin:0">64-slice CT, vergeleken met coronaire angiografie, bij <b>72 patiënten</b>. Bij 20 was er een significante stenose (verlaging van het lumen ≥50%).</p></div>
+      <div class="card o"><h3>Priorkans</h3><p style="margin:0">In de studie: <b>20 van 72 = 28%</b>.<br>Bij jouw patiënt: <b>5 tot 15%</b>.</p><p style="margin:6px 0 0;font-size:17px" class="quiet">Een ander spectrum van patiënten geeft een andere PVW en NVW.</p></div>
+    </div>
+    <div>
+      <p style="margin:0 0 4px;font-size:19px" class="quiet">Per patiënt, uit tabel 3 van de studie:</p>
+      <table class="m2">
+        <tr><td class="rowh"></td><th>CAG: ZIEK</th><th>CAG: GEZOND</th></tr>
+        <tr><td class="rowh">CTA POSITIEF</td><td class="tp"><b class="l">20</b></td><td class="fp"><b class="l">1</b></td></tr>
+        <tr><td class="rowh">CTA NEGATIEF</td><td class="fn"><b class="l">0</b></td><td class="tn"><b class="l">51</b></td></tr>
+      </table>
+      <p style="font-size:19px;margin:8px 0 0">Sensitiviteit 20/20, specificiteit 51/52.</p>
+    </div>
+  </div>
+  <div class="src">Cademartiri F, Maffei E, Palumbo A, et al. Diagnostic accuracy of 64-slice computed tomography coronary angiography in patients with low-to-intermediate risk. Radiol Med 2007;112:969-981. doi:10.1007/s11547-007-0198-5. Tabel 3, per patiënt (n=72).</div>
+</section>
+
+<!-- ===== 16 VALIDITEIT ===== -->
+<section class="slide">
+  <div class="blocktag">5 · Jouw patiënt</div>
+  <h2 style="margin-bottom:8px">Validiteit: kun je de studie vertrouwen?</h2>
+  <p style="margin:0 0 12px;font-size:21px" class="quiet">Voordat je de getallen gebruikt, beoordeel je de studie.</p>
+  <div class="cols c2" style="align-items:start">
+    <div>
+      <div class="step"><div class="n">1</div><p>Is er een goede referentietest (hier CAG) en kreeg iedere patiënt die?</p></div>
+      <div class="step"><div class="n">2</div><p>Zijn test en referentietest onafhankelijk van elkaar beoordeeld?</p></div>
+      <div class="step"><div class="n">3</div><p>Lijkt de studiepopulatie op jouw patiënt?</p></div>
+      <div class="step"><div class="n">4</div><p>Zijn er genoeg patiënten? Hier maar 20 zieken.</p></div>
+    </div>
+    <div class="card o">
+      <h3>Wat zie je in dit artikel?</h3>
+      <p style="font-size:22px">Het betrouwbaarheidsinterval van sensitiviteit en NVW loopt van 83 tot 100%. Dat is breed.</p>
+      <p style="font-size:22px">De priorkans in de studie (28%) is hoger dan bij jouw patiënt (5 tot 15%).</p>
+      <p class="quiet" style="font-size:17px">De negen criteria uit het CAT-boek (blz. 190) volgen in workshop 2.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 15 EVIDENCE TABLE ===== -->
+<section class="slide">
+  <div class="blocktag">5 · Jouw patiënt</div>
+  <h2 style="margin-bottom:8px">De evidence table</h2>
+  <table class="tbl" style="font-size:24px">
+    <tr><th></th><th class="c">Priorkans</th><th class="c">Sensitiviteit<br>(95% BI)</th><th class="c">Specificiteit<br>(95% BI)</th><th class="c">PVW<br>(95% BI)</th><th class="c">NVW<br>(95% BI)</th></tr>
+    <tr><td><b>Populatie in het artikel</b></td><td class="c">28%</td><td class="c">100%<br><span class="quiet" style="font-size:15px">(83 tot 100)</span></td><td class="c">98,1%<br><span class="quiet" style="font-size:15px">(89 tot 99)</span></td><td class="c">95,2%<br><span class="quiet" style="font-size:15px">(76 tot 99)</span></td><td class="c">100%<br><span class="quiet" style="font-size:15px">(83 tot 100)</span></td></tr>
+    <tr><td><b>Bovengrens priorkans patiënt</b></td><td class="c">15%</td><td class="c">100%</td><td class="c">98,1%</td><td class="c"><b>90%</b></td><td class="c"><b>100%</b></td></tr>
+    <tr><td><b>Ondergrens priorkans patiënt</b></td><td class="c">5%</td><td class="c">100%</td><td class="c">98,1%</td><td class="c"><b>73%</b></td><td class="c"><b>100%</b></td></tr>
+  </table>
+  <div class="cols c2" style="margin-top:16px">
+    <div class="strip"><p>Sensitiviteit en specificiteit nemen we over uit het artikel. PVW en NVW reken je opnieuw uit bij de priorkans van jouw patiënt.</p></div>
+    <div class="card t" style="padding:12px 20px"><p style="margin:0;font-size:18px">Rekenen: PVW = sens x prior / (sens x prior + (1 min spec) x (1 min prior)).</p></div>
+  </div>
+  <div class="src">Cademartiri 2007, tabel 3, per patiënt: TP 20, FP 1, FN 0, TN 51. Sens = 20/20 = 100%. Spec = 51/52 = 98,1%. PVW bij 15%: 0,150 / (0,150 + 0,019 x 0,85) = 0,150/0,166 = 90%. PVW bij 5%: 0,050 / (0,050 + 0,019 x 0,95) = 0,050/0,068 = 73%. NVW = 0,981 x (1 min p) / (0,981 x (1 min p) + 0 x p) = 100%.</div>
+</section>
+
+<!-- ===== 17 DIAGNOSTISCHE WAARDEN + DREMPELS ===== -->
+<section class="slide">
+  <div class="blocktag">5 · Jouw patiënt</div>
+  <h2 style="margin-bottom:8px">Waar eindig je ten opzichte van de drempels?</h2>
+  <div style="position:relative;margin:56px 0 6px">
+    <div class="zbar" style="height:70px">
+      <div class="z z1" style="width:22%">uitgesloten</div>
+      <div class="z z2" style="width:46%">onzeker</div>
+      <div class="z z3" style="width:32%">aangetoond</div>
+      <div class="th" style="left:22%"></div><div class="th" style="left:68%"></div>
+    </div>
+    <div class="thl" style="left:22%">A · testdrempel</div><div class="thl" style="left:68%">B · behandeldrempel</div>
+  </div>
+  <svg viewBox="0 0 1136 120" width="100%" height="120" style="display:block">
+    <defs><marker id="a2" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#14213d"/></marker></defs>
+    <rect x="420" y="6" width="190" height="34" rx="17" fill="#eef0f4" stroke="#8a92a3"/><text x="515" y="29" text-anchor="middle" font-size="17" font-weight="700" fill="#14213d">priorkans 5 tot 15%</text>
+    <path d="M470 42 Q300 60 190 92" fill="none" stroke="#14213d" stroke-width="2.5" marker-end="url(#a2)"/>
+    <path d="M560 42 Q820 60 935 92" fill="none" stroke="#14213d" stroke-width="2.5" marker-end="url(#a2)"/>
+  </svg>
+  <div class="cols c2" style="margin-top:-4px">
+    <div class="card t"><h3>CTA negatief</h3><p style="margin:0">NVW 100%: de kans op coronairlijden is dan ongeveer 0%, onder de testdrempel. Uitgesloten, geen CAG nodig.</p></div>
+    <div class="card o"><h3>CTA positief</h3><p style="margin:0">PVW 73 tot 90%: de kans komt hoog, in de buurt van of boven de behandeldrempel. Dan volgt een CAG.</p></div>
+  </div>
+</section>
+
+<!-- ===== 18 VRAAG EN ANTWOORD ===== -->
+<section class="slide">
+  <div class="blocktag">6 · Antwoord</div>
+  <h2 style="margin-bottom:10px">Klinische vraag en antwoord</h2>
+  <div class="q" style="margin-bottom:16px"><p style="font-size:20px"><b>Vraag.</b> Is de negatief voorspellende waarde van het CT-angiogram (CTA) hoog genoeg om, vergeleken met de coronaire angiografie (CAG), met voldoende zekerheid coronairlijden uit te sluiten bij een 42-jarige rokende vrouw met pijn op de borst, BMI 39, hyperlipidemie, verhoogde bloedsuikerspiegel, normaal rust-ECG en troponine T, en een positieve familieanamnese voor hart- en vaatziekten?</p></div>
+  <div class="card t">
+    <h3>Antwoord</h3>
+    <p style="font-size:22px">De NVW van de CTA is <b>100%</b> (95% BI 83 tot 100) in de studie en blijft 100% bij een priorkans van 5 tot 15%. Een negatieve CTA brengt de kans op coronairlijden onder de testdrempel. De NVW is <b>hoog genoeg</b> om coronairlijden bij deze patiënt uit te sluiten.</p>
+    <p style="font-size:18px" class="quiet">Kanttekening: de studie is klein (72 patiënten, 20 zieken). Met de ondergrens van de sensitiviteit (83%) komt de NVW bij een priorkans van 15% uit op ongeveer 97%. De patiënt heeft een lagere priorkans dan de studiepopulatie.</p>
+  </div>
+</section>
+
+<!-- ===== 19 SAMENVATTING ===== -->
+<section class="slide">
+  <div class="blocktag">Samenvatting</div>
+  <h2 style="margin-bottom:12px">Take home messages</h2>
+  <div class="cols c2" style="align-items:start">
+    <div>
+      <div class="step"><div class="n">1</div><p>Start met een scenario en een dilemma: priorkans, testdrempel, behandeldrempel.</p></div>
+      <div class="step"><div class="n">2</div><p>Formuleer een klinische vraag: patiënt, test, referentietest, uitkomst.</p></div>
+      <div class="step"><div class="n">3</div><p>Zet de test in een 2x2-tabel: sensitiviteit en specificiteit voor de test, PVW en NVW voor de patiënt.</p></div>
+    </div>
+    <div>
+      <div class="step"><div class="n">4</div><p>Een goede referentietest en een passend afkappunt bepalen hoe valide de test is.</p></div>
+      <div class="step"><div class="n">5</div><p>Vergelijk de studiepopulatie met jouw patiënt en reken PVW en NVW opnieuw uit.</p></div>
+      <div class="step"><div class="n">6</div><p>Beantwoord de vraag: waar eindig je ten opzichte van de drempels?</p></div>
+    </div>
+  </div>
+  <div class="strip" style="margin-top:22px"><p>Sensitiviteit en specificiteit zijn eigenschappen van de test. PVW en NVW hangen ook af van de priorkans.</p></div>
+</section>
+
+<!-- ===== 20 BRONNEN ===== -->
+<section class="slide">
+  <div class="blocktag">Voorbereiding en bronnen</div>
+  <h2 style="margin-bottom:12px">Voorbereiding en bronnen</h2>
+  <div class="cols c2" style="align-items:start">
+    <div class="card n">
+      <h3>CAT-boek</h3>
+      <p>Critical Appraisal of a Topic: how to integrate patient characteristics and preferences with clinical expertise and external evidence.</p>
+      <ul><li>Hoofdstuk 3, inleiding en paragraaf 3.2, opdrachten 3.1 tot en met 3.3</li><li>Hoofdstuk 2, paragraaf 2.2: het formuleren van een klinische vraag</li></ul>
+    </div>
+    <div class="card t">
+      <h3>Video's (Canvas)</h3>
+      <ul>
+        <li>Gevoeligheid en specificiteit<br><a href="https://www.youtube.com/watch?v=eC1K_2DR9Yg" style="font-size:15px">youtube.com/watch?v=eC1K_2DR9Yg</a></li>
+        <li>Positief en negatief voorspellende waarde<br><a href="https://www.youtube.com/watch?v=SEcExAHTPqE" style="font-size:15px">youtube.com/watch?v=SEcExAHTPqE</a></li>
+        <li>Positieve voorspellende waarde en specificiteit<br><a href="https://www.youtube.com/watch?v=z4yauM3GqfI" style="font-size:15px">youtube.com/watch?v=z4yauM3GqfI</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="quiet" style="font-size:17px;margin-top:16px">Vragen over deze workshop of de opdrachten: epid-education@maastrichtuniversity.nl (vermeld jaar en cursusonderdeel in de titel).</p>
+  <div class="src">Afdeling Epidemiologie · www.meta-research.nl · © Maurice Zeegers, versie 24 november 2026.</div>
+</section>
+
+</div>
+
+<script>
+(function(){
+  function erf(x){var s=x<0?-1:1;x=Math.abs(x);var t=1/(1+0.3275911*x);var y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x);return s*y}
+  function Phi(z){return 0.5*(1+erf(z/Math.SQRT2))}
+  function pdf(x,m){return Math.exp(-0.5*(x-m)*(x-m))/Math.sqrt(2*Math.PI)}
+  var MU=2;
+
+  /* ---- slider met verdelingen ---- */
+  var dist=document.getElementById('dist'),cut=document.getElementById('cut');
+  var X0=-3.5,X1=5.5,W=700,H=300,PB=36,PT=20;
+  function sx(x){return (x-X0)/(X1-X0)*W}
+  function sy(y){return H-PB-y/0.45*(H-PB-PT)}
+  function curve(m,from,to){var d='';var n=70;for(var i=0;i<=n;i++){var x=from+(to-from)*i/n;d+=(i?'L':'M')+sx(x).toFixed(1)+' '+sy(pdf(x,m)).toFixed(1)}return d}
+  function area(m,from,to){var base=sy(0).toFixed(1);return curve(m,from,to)+'L'+sx(to).toFixed(1)+' '+base+'L'+sx(from).toFixed(1)+' '+base+'Z'}
+  function drawDist(){
+    var c=parseFloat(cut.value);
+    var s='';
+    s+='<path d="'+area(0,X0,X1)+'" fill="#d7eeee" opacity=".7"/>';
+    s+='<path d="'+area(MU,X0,X1)+'" fill="#f6e6cc" opacity=".7"/>';
+    s+='<path d="'+area(0,c,X1)+'" fill="#0f7f86" opacity=".35"/>';
+    s+='<path d="'+area(MU,X0,c)+'" fill="#b9741a" opacity=".35"/>';
+    s+='<path d="'+curve(0,X0,X1)+'" fill="none" stroke="#0f7f86" stroke-width="3"/>';
+    s+='<path d="'+curve(MU,X0,X1)+'" fill="none" stroke="#b9741a" stroke-width="3"/>';
+    s+='<line x1="'+sx(c)+'" y1="'+(PT-8)+'" x2="'+sx(c)+'" y2="'+sy(0)+'" stroke="#14213d" stroke-width="3" stroke-dasharray="7 5"/>';
+    s+='<line x1="0" y1="'+sy(0)+'" x2="'+W+'" y2="'+sy(0)+'" stroke="#8a92a3" stroke-width="2"/>';
+    s+='<text x="'+sx(0)+'" y="'+(sy(0)+24)+'" text-anchor="middle" font-size="17" font-weight="700" fill="#0f5c62">gezond</text>';
+    s+='<text x="'+sx(MU)+'" y="'+(sy(0)+24)+'" text-anchor="middle" font-size="17" font-weight="700" fill="#7a4a0c">ziek</text>';
+    s+='<text x="'+(sx(c)+8)+'" y="'+(PT+6)+'" font-size="16" font-weight="700" fill="#14213d">test positief →</text>';
+    s+='<text x="'+(sx(c)-8)+'" y="'+(PT+6)+'" text-anchor="end" font-size="16" font-weight="700" fill="#14213d">← test negatief</text>';
+    dist.innerHTML=s;
+    document.getElementById('sens').textContent=Math.round((1-Phi(c-MU))*100)+'%';
+    document.getElementById('spec').textContent=Math.round(Phi(c)*100)+'%';
+  }
+  cut.addEventListener('input',drawDist);
+  cut.addEventListener('change',function(){cut.blur()});
+  drawDist();
+
+  /* ---- ROC ---- */
+  var roc=document.getElementById('roc');
+  var L=56,T=14,S=350;
+  function rx(f){return L+f*S}function ry(s){return T+(1-s)*S}
+  var s='';
+  s+='<rect x="'+L+'" y="'+T+'" width="'+S+'" height="'+S+'" fill="#fff" stroke="#c9ccd4"/>';
+  for(var g=0.25;g<1;g+=0.25){s+='<line x1="'+rx(g)+'" y1="'+T+'" x2="'+rx(g)+'" y2="'+(T+S)+'" stroke="#eceae3"/><line x1="'+L+'" y1="'+ry(g)+'" x2="'+(L+S)+'" y2="'+ry(g)+'" stroke="#eceae3"/>'}
+  s+='<line x1="'+rx(0)+'" y1="'+ry(0)+'" x2="'+rx(1)+'" y2="'+ry(1)+'" stroke="#8a92a3" stroke-width="2" stroke-dasharray="6 5"/>';
+  var d='';for(var c=5;c>=-3;c-=0.05){var fp=1-Phi(c),se=1-Phi(c-MU);d+=(d?'L':'M')+rx(fp).toFixed(1)+' '+ry(se).toFixed(1)}
+  s+='<path d="'+d+'" fill="none" stroke="#14213d" stroke-width="4"/>';
+  var pts=[{c:2.0,n:'hoog',col:'#b9741a',dx:16,dy:14},{c:1.0,n:'midden',col:'#14213d',dx:16,dy:22},{c:0.0,n:'laag',col:'#0f7f86',dx:-24,dy:36}];
+  pts.forEach(function(p){var fp=1-Phi(p.c),se=1-Phi(p.c-MU);
+    s+='<circle cx="'+rx(fp)+'" cy="'+ry(se)+'" r="9" fill="'+p.col+'" stroke="#fff" stroke-width="2"/>';
+    s+='<text x="'+(rx(fp)+p.dx)+'" y="'+(ry(se)+p.dy)+'" font-size="15" font-weight="700" fill="'+p.col+'">'+p.n+' afkappunt</text>';
+    s+='<text x="'+(rx(fp)+p.dx)+'" y="'+(ry(se)+p.dy+17)+'" font-size="13" fill="#5b6475">sens '+Math.round(se*100)+'%, spec '+Math.round((1-fp)*100)+'%</text>';
+  });
+  s+='<text x="'+(L+S/2)+'" y="'+(T+S+38)+'" text-anchor="middle" font-size="16" fill="#14213d">1 min specificiteit (foutpositieven)</text>';
+  s+='<text transform="translate(18,'+(T+S/2)+') rotate(-90)" text-anchor="middle" font-size="16" fill="#14213d">sensitiviteit</text>';
+  [0,0.5,1].forEach(function(v){s+='<text x="'+rx(v)+'" y="'+(T+S+16)+'" text-anchor="middle" font-size="13" fill="#5b6475">'+Math.round(v*100)+'%</text><text x="'+(L-8)+'" y="'+(ry(v)+4)+'" text-anchor="end" font-size="13" fill="#5b6475">'+Math.round(v*100)+'%</text>'});
+  roc.innerHTML=s;
+
+  /* ---- navigatie ---- */
+  var slides=[].slice.call(document.querySelectorAll('.slide')),i=0,stage=document.getElementById('stage');
+  slides.forEach(function(sl,k){var p=document.createElement('div');p.className='pg';p.textContent=(k+1)+' / '+slides.length;sl.appendChild(p)});
+  function fit(){var f=Math.min(innerWidth/1280,innerHeight/720);stage.style.transform='translate(-50%,-50%) scale('+f+')'}
+  function show(n){i=Math.max(0,Math.min(slides.length-1,n));slides.forEach(function(sl,k){sl.classList.toggle('on',k===i)});try{history.replaceState(null,'','#'+(i+1))}catch(e){}}
+  addEventListener('resize',fit);fit();
+  addEventListener('keydown',function(e){
+    if(e.target&&e.target.tagName==='INPUT'&&['ArrowLeft','ArrowRight'].indexOf(e.key)>-1)return;
+    if(['ArrowRight','PageDown',' '].indexOf(e.key)>-1){show(i+1);e.preventDefault()}
+    else if(['ArrowLeft','PageUp'].indexOf(e.key)>-1){show(i-1);e.preventDefault()}
+    else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+    else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+  });
+  addEventListener('click',function(e){if(e.target.closest&&(e.target.closest('.noclick')||e.target.closest('a')))return;show(e.clientX>innerWidth/2?i+1:i-1)});
+  show((parseInt(location.hash.slice(1),10)||1)-1);
+})();
+</script>
+</body>
+</html>
